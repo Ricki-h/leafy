@@ -1,8 +1,10 @@
 <script setup>
 import { ref } from 'vue'
 import api from '../services/api.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
-const email = ref('')
+const login = ref('')
 const password = ref('')
 const error = ref('')
 
@@ -11,14 +13,14 @@ const handleLogin = async () => {
     error.value = ''
 
     const res = await api.post('/auth/login', {
-      email: email.value,
+      login: login.value,
       password: password.value
     })
 
     localStorage.setItem('token', res.data.token)
     localStorage.setItem('user', JSON.stringify(res.data.user))
 
-    alert(`Bem vindo, ${res.data.user.name}!`)
+    router.push('/feed')
   } catch (err) {
     error.value = err.response?.data?.error || 'Erro ao fazer login.'
   }
@@ -37,11 +39,11 @@ const handleLogin = async () => {
       <form @submit.prevent="handleLogin">
 
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2">E-mail ou Nome de usuário</label>
           <input
-            v-model="email"
-            type="email"
-            placeholder="seu@email.com"
+            v-model="login"
+            type="text"
+            placeholder="email ou username"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg"
             required
           >

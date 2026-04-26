@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import api from '../services/api.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const name = ref('')
+const username = ref('')
 const email = ref('')
 const password = ref('')
 const birthDate = ref('')
@@ -16,12 +19,13 @@ const handleRegister = async () => {
 
     await api.post('/auth/register', {
       name: name.value,
+      username: username.value,
       email: email.value,
       password: password.value,
       birthDate: birthDate.value
     })
 
-    success.value = 'Conta criada com sucesso! Faça login.'
+    router.push('/login')
   } catch (err) {
     error.value = err.response?.data?.error || 'Erro ao criar conta.'
   }
@@ -45,6 +49,17 @@ const handleRegister = async () => {
             v-model="name"
             type="text"
             placeholder="Seu nome"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            required
+          >
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Nome de usuário</label>
+          <input
+            v-model="username"
+            type="text"
+            placeholder="Seu nome de usuário"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg"
             required
           >
