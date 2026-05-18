@@ -58,8 +58,8 @@ Backend
 
 ## Features futuras
 ---
-📝 Upload da foto de perfil
-📝 Posts e comentários
+📝 Upload da foto de perfil <br/>
+📝 Posts e comentários <br/>
 📝 Login com google
 
 ## Licença
