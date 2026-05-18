@@ -85,7 +85,7 @@ npm install
 npm run dev
 ```
 
-> Configure as variáveis de ambiente antes de rodar. Veja o arquivo `.env.example`.
+> Configure as variáveis de ambiente antes de rodar.
 
 ## 🛠️ Features futuras
 
