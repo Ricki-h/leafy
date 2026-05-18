@@ -57,26 +57,31 @@ _prints e gifs com usos e funcionalidades_
 ## 🖥️ Como rodar localmente
 
 ```bash
-# Clone o repositório
-git clone https://gitlab.com/seu-usuario/leafy.git
+# Para o front
+## Clone o repositório do front
+git clone https://gitlab.com/Hugo505/leafy.git
 
-# Acesse a pasta do projeto
-cd leafy
+## Acesse a pasta do projeto
+cd leafy/app
 
-# Instale as dependências do backend
-cd backend
+## Instale as dependências
 npm install
 
-# Instale as dependências do frontend
-cd ../frontend
-npm install
-
-# Rode o backend
-cd ../backend
+## Rode o frontend
 npm run dev
 
-# Rode o frontend (em outro terminal)
-cd ../frontend
+
+# Para o back
+## Clone o repositório do back
+git clone https://gitlab.com/rick1n.htz/leapi.git
+
+## Acesse a pasta do projeto
+cd leapi
+
+## Instale as dependências
+npm install
+
+## Rode o back (terminal diferente do frontend)
 npm run dev
 ```
 
