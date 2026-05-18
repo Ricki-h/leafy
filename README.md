@@ -68,6 +68,7 @@ Leafy é licenciado por [GPLv3](./LICENSE)
 
 ## ✒️ Equipe
 ---
+<div align="center">
 <table align="center">
   <tr>
     <td align="center">
@@ -84,3 +85,4 @@ Leafy é licenciado por [GPLv3](./LICENSE)
     </td>
   </tr>
 </table>
+</div>
