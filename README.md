@@ -16,6 +16,10 @@
 ---
 O Leafy é uma rede social voltada para leitores, na qual é possível tanto avaliar e fazer resenha de livros quanto fazer postagens para amigos e seguidres sobre os livros que está lendo, leu ou quer ler.
 
+<h4 align="center"> 
+	:construction:  Projeto em construção  :construction:
+</h4>
+
 ## Funcionalidades
 ---
-` ✔️ Funcionalidade 1 `
+✔️ Funcionalidade 1
