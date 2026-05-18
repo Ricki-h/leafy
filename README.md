@@ -1,5 +1,5 @@
 <div align="center">
-    <h1 align="center">🍀 Leafy</h1>
+    <h1 align="center">Leafy</h1>
     <br />
     <a href=""><img src="./image.png" alt="Leafy banner"></a>
     <br />
@@ -11,7 +11,7 @@
     </p> 
 </div>
 
-## 🚀 Descrição
+## 🍀 Descrição
 
 O Leafy é uma rede social voltada para leitores, na qual é possível tanto avaliar e fazer resenha de livros quanto fazer postagens para amigos e seguidores sobre os livros que está lendo, leu ou quer ler.
 
