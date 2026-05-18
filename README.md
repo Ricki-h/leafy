@@ -1,5 +1,5 @@
 <div align="center">
-    <h1 align="center">🌿 Leafy</h1>
+    <h1 align="center">🍀 Leafy</h1>
     <br />
     <a href=""><img src="./image.png" alt="Leafy banner"></a>
     <br />
