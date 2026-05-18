@@ -18,4 +18,4 @@ O Leafy é uma rede social voltada para leitores, na qual é possível tanto ava
 
 ## Funcionalidades
 ---
-` :heavy_check_mark: Funcionalidade 1 `
+` ✔️ Funcionalidade 1 `
