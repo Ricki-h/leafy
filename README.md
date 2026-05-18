@@ -1,7 +1,7 @@
 <div align="center">
     <h1 align="center">Leafy</h1>
     <br />
-    imagem aqui
+    <a href=""><img src="./image.png"></a>
     <br />
     <br />
     <p align="center">
@@ -12,13 +12,13 @@
 </div>
 
 
-## Descrição
+## 🚀 Descrição
 ---
 O Leafy é uma rede social voltada para leitores, na qual é possível tanto avaliar e fazer resenha de livros quanto fazer postagens para amigos e seguidres sobre os livros que está lendo, leu ou quer ler.
 
 > :construction: Projeto em construção :construction:
 
-## Funcionalidades
+## 🔧 Funcionalidades
 ---
 >✔️ Cadastro e login de usuários, com autenticação de email <br/>
 ✔️ Perfil com nome, username e bio <br/>
@@ -31,11 +31,11 @@ O Leafy é uma rede social voltada para leitores, na qual é possível tanto ava
 ✔️ Salvar livros em listas públicas ou privadas <br/>
 ✔️ Remoção de resenhas e contas inadequadas <br/>
 
-## Casos de uso
+## ⚙️ Casos de uso
 ---
 _prints e gifs com usos e funcionalidades_
 
-## Tecnologias utilizadas
+## 📦 Tecnologias utilizadas
 ---
 ### Linguagens
 - HTML
@@ -56,16 +56,25 @@ Backend
 - Postgress
 - Sequelize (ORM)
 
-## Features futuras
+## 🛠️ Features futuras
 ---
 📝 Upload da foto de perfil <br/>
 📝 Posts e comentários <br/>
 📝 Login com google
 
-## Licença
+## 📄 Licença
 ---
 Leafy é licenciado por [GPLv3](./LICENSE)
 
-## Equipe
+## ✒️ Equipe
 ---
-_pessoal da qeuipe_
+<div style="display: flex; justify-content: space-evenly; gap: 40px; flex-wrap: wrap">
+    <div align="center" style="border: solid 1px; padding-top: 15px; padding-left: 20px; padding-right: 20px; border-radius: 5%">
+        <a href="https://gitlab.com/Hugo505"><img width="160px" src="https://gitlab.com/uploads/-/system/user/avatar/30439212/avatar.png?width=800" style="border-radius: 100%"></a>
+        <a href="https://gitlab.com/Hugo505"><h3>Hugo505</h3></a>
+    </div>
+    <div align="center" style="border: solid 1px; padding-top: 15px; padding-left: 20px; padding-right: 20px; border-radius: 5%">
+        <a href="https://gitlab.com/rick1n.htz"><img width="160px" src="https://gitlab.com/uploads/-/system/user/avatar/22857308/avatar.png?width=800" style="border-radius: 100%"></a>
+        <a href="https://gitlab.com/rick1n.htz"><h3>Ricki</h3></a>
+    </div>
+</div>
