@@ -20,5 +20,14 @@ O Leafy é uma rede social voltada para leitores, na qual é possível tanto ava
 
 ## Funcionalidades
 ---
->✔️ Funcionalidade 1 <br/>
-✔️ Funcionalidade 2
+>✔️ Cadastro e login de usuários, com autenticação de email <br/>
+✔️ Perfil com nome, username, foto de perfil e bio <br/>
+✔️ Editar dados do perfil e do usuário <br/>
+✔️ Seguir e ser seguido <br/>
+✔️ Buscar livros com filtros <br/>
+✔️ Cadastro automático de livros via APIs externas - Google Books API & Open Library <br/>
+✔️ Avaliação rápido de 1 a 5 leafs (estrelas) <br/>
+✔️ Resenha mais detalhada com pontuação em diferentes critérios <br/>
+✔️ Salvar livros em listas públicas ou privadas <br/>
+✔️ Criar posts e comentários <br/>
+✔️ Remoção de posts, resenhas e contas inadequadas <br/>
