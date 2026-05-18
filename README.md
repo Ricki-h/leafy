@@ -68,7 +68,7 @@ Leafy é licenciado por [GPLv3](./LICENSE)
 
 ## ✒️ Equipe
 ---
-<div style="display: flex; justify-content: space-evenly; gap: 40px; flex-wrap: wrap">
+<p style="display: flex; justify-content: space-evenly; gap: 40px; flex-wrap: wrap">
     <div align="center" style="border: solid 1px; padding-top: 15px; padding-left: 20px; padding-right: 20px; border-radius: 5%">
         <a href="https://gitlab.com/Hugo505"><img width="160px" src="https://gitlab.com/uploads/-/system/user/avatar/30439212/avatar.png?width=800" style="border-radius: 100%"></a>
         <a href="https://gitlab.com/Hugo505"><h3>Hugo505</h3></a>
@@ -77,4 +77,4 @@ Leafy é licenciado por [GPLv3](./LICENSE)
         <a href="https://gitlab.com/rick1n.htz"><img width="160px" src="https://gitlab.com/uploads/-/system/user/avatar/22857308/avatar.png?width=800" style="border-radius: 100%"></a>
         <a href="https://gitlab.com/rick1n.htz"><h3>Ricki</h3></a>
     </div>
-</div>
+</p>
