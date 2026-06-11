@@ -112,7 +112,7 @@ Leafy é licenciado sob [GPLv3](./LICENSE).
       <a href="https://gitlab.com/rick1n.htz">
         <img src="https://gitlab.com/uploads/-/system/user/avatar/22857308/avatar.png?width=800" width="100px" style="border-radius: 50%" alt="Ricki"/><br/>
         <b>Ricki</b><br/>
-        <sub>Frontend</sub>
+        <sub>Full Stack</sub>
       </a>
     </td>
   </tr>
