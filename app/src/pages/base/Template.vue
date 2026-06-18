@@ -11,7 +11,7 @@
 </script>
 
 <template>
-    <div class="flex w-full justify-center">
+    <div class="flex w-full justify-center h-screen">
         <div class="flex container-app">
             <template v-if="props.variant == 'full'">
                 <MenuLeft></MenuLeft>
