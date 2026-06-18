@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../pages/Login.vue'
 import Home from '../pages/Home.vue'
 import Register from '../pages/Register.vue'
+import NotFound from '../pages/NotFound.vue'
+import Notificacoes from '../pages/Notificacoes.vue'
 import User from '../pages/User.vue'
 
 const routes = [
@@ -14,6 +16,8 @@ const routes = [
     meta: { requiresAuth: true } 
   },
   { path: '/verificar-email', component: () => import('../pages/VerificarEmail.vue') },
+  { path: '/notfound', component: NotFound },
+  { path: '/notificacoes', component: Notificacoes },
   { path: '/users/:username', component: User },
 ]
 
