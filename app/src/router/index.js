@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../pages/Login.vue'
 import Home from '../pages/Home.vue'
 import Register from '../pages/Register.vue'
+import User from '../pages/User.vue'
 
 const routes = [
   { path: '/', component: Home },
@@ -12,7 +13,8 @@ const routes = [
     component: () => import('../pages/Feed.vue'), 
     meta: { requiresAuth: true } 
   },
-  { path: '/verificar-email', component: () => import('../pages/VerificarEmail.vue') }
+  { path: '/verificar-email', component: () => import('../pages/VerificarEmail.vue') },
+  { path: '/users/:username', component: User },
 ]
 
 const router = createRouter({
