@@ -4,6 +4,7 @@ import Home from '../pages/Home.vue'
 import Register from '../pages/Register.vue'
 import NotFound from '../pages/NotFound.vue'
 import Notificacoes from '../pages/Notificacoes.vue'
+import User from '../pages/User.vue'
 
 const routes = [
   { path: '/', component: Home },
@@ -16,7 +17,8 @@ const routes = [
   },
   { path: '/verificar-email', component: () => import('../pages/VerificarEmail.vue') },
   { path: '/notfound', component: NotFound },
-  { path: '/notificacoes', component: Notificacoes }
+  { path: '/notificacoes', component: Notificacoes },
+  { path: '/users/:username', component: User },
 ]
 
 const router = createRouter({

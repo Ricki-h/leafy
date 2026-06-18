@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import api from '../services/api.js'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import Template from './base/Template.vue'
+
 const router = useRouter()
 
 const name = ref('')
@@ -10,12 +12,10 @@ const email = ref('')
 const password = ref('')
 const birthDate = ref('')
 const error = ref('')
-const success = ref('')
 
 const handleRegister = async () => {
   try {
     error.value = ''
-    success.value = ''
 
     await api.post('/auth/register', {
       name: name.value,
@@ -33,87 +33,106 @@ const handleRegister = async () => {
 </script>
 
 <template>
-  <main class="mx-auto container">
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+  <Template variant="none" class="items-center flex">
+    <div class="w-full max-w-148 flex flex-col gap-8">
 
-      <div class="text-center mb-6">
-        <h2 class="text-3xl font-bold text-gray-700">Bem-vindo</h2>
-        <p class="text-gray-500 text-sm mt-1">Faça sua conta</p>
+      <div class="font-qurova">
+        <h2 class="text-5xl font-bold text-[#CCD6E5]">
+          Bem vindo(a) ao
+          <span class="text-[#33BC90]">Leafy</span>!
+        </h2>
       </div>
 
-      <form @submit.prevent="handleRegister">
+      <img src="../../assets/line.svg" alt="">
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+      <form @submit.prevent="handleRegister" class="flex flex-col gap-6">
+
+        <div>
+          <label class="block text-sm font-medium text-[#86909F] mb-2">
+            Nome
+          </label>
           <input
             v-model="name"
             type="text"
             placeholder="Seu nome"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
             required
           >
         </div>
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Nome de usuário</label>
+        <div>
+          <label class="block text-sm font-medium text-[#86909F] mb-2">
+            Nome de usuário
+          </label>
           <input
             v-model="username"
             type="text"
-            placeholder="Seu nome de usuário"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            placeholder="@username"
+            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
             required
           >
         </div>
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
+        <div>
+          <label class="block text-sm font-medium text-[#86909F] mb-2">
+            E-mail
+          </label>
           <input
             v-model="email"
             type="email"
-            placeholder="seu@email.com"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            placeholder="email@exemplo.com"
+            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
             required
           >
         </div>
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Data de nascimento</label>
+        <div>
+          <label class="block text-sm font-medium text-[#86909F] mb-2">
+            Data de nascimento
+          </label>
           <input
             v-model="birthDate"
             type="date"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
             required
           >
         </div>
 
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+        <div>
+          <label class="block text-sm font-medium text-[#86909F] mb-2">
+            Senha
+          </label>
           <input
             v-model="password"
             type="password"
             placeholder="******"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
             required
           >
         </div>
 
-        <p v-if="error" class="text-red-500 text-sm mb-4">{{ error }}</p>
-        <p v-if="success" class="text-green-500 text-sm mb-4">{{ success }}</p>
+        <p v-if="error" class="text-red-500 text-sm">
+          {{ error }}
+        </p>
 
-        <button
-          type="submit"
-          class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700"
-        >
-          Criar conta
-        </button>
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            class="w-full text-xl bg-[#33BC90] text-[#18202C] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer"
+          >
+            Criar conta
+          </button>
+
+          <RouterLink
+            to="/login"
+            class="text-center w-full text-xl border border-[#CCD6E5] text-[#CCD6E5] font-bold py-2 px-4 rounded-full hover:bg-[#CCD6E5] hover:text-[#18202C] transition-colors"
+          >
+            Já tenho conta
+          </RouterLink>
+        </div>
 
       </form>
 
-      <p class="mt-6 text-center text-sm text-gray-600">
-        Já tem uma conta?
-        <a href="/login" class="text-blue-600 font-semibold hover:underline">Entrar</a>
-      </p>
-
     </div>
-  </main>
+  </Template>
 </template>
