@@ -10,7 +10,7 @@ export default {
         
       },
       fontFamily: {
-        
+        figtree: ['Figtree']
       },
     },
   },

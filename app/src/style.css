@@ -1,16 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 
-/* @font-face {
-  font-family: 'Moga';
-  src: url('./assets/fonts/Moga.otf') format('opentype');
-  font-weight: normal;
+@font-face {
+  font-family: 'Qurova';
+  src: url('./assets/fonts/Qurova-Light.otf') format('opentype');
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
-} */
+}
+@font-face {
+  font-family: 'Qurova';
+  src: url('./assets/fonts/Qurova-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Qurova';
+  src: url('./assets/fonts/Qurova-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Qurova';
+  src: url('./assets/fonts/Qurova-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Qurova';
+  src: url('./assets/fonts/Qurova-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
-/* @theme {
-  
-} */
+@theme {
+  --font-figtree: 'Figtree', sans-serif;
+  --font-qurova: 'Qurova', serif;
+}
 
 @layer base {
     /* html {

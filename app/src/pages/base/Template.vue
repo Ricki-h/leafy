@@ -22,9 +22,12 @@
                 <MenuLeft></MenuLeft>
                 <main class="text-[#CCD6E5] w-full"><slot></slot></main>
             </template>
-            <template v-else>
+            <template v-else-if="props.variant == 'right'">
                 <main class="text-[#CCD6E5] w-full"><slot></slot></main>
                 <AsideRight></AsideRight>
+            </template>
+            <template v-else>
+                <main class="text-[#CCD6E5] w-full"><slot></slot></main>
             </template>
         </div>
     </div>
