@@ -26,7 +26,7 @@ onMounted(async () => {
 <template>
     <aside v-if="me" class="min-h-screen w-full max-w-70 flex flex-col justify-between px-6 py-4 border-r border-r-[#5A6270]">
         <div class="flex flex-col gap-6">
-            <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+            <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="23" viewBox="0 0 40 23" fill="none">
                     <path d="M29.9893 16.75C27.7223 20.461 23.127 23 17.8271 23C10.2798 22.9998 4.16121 17.8511 4.16113 11.5C4.16113 5.1489 10.2797 0.000171828 17.8271 1.21683e-06C23.1258 1.44844e-06 27.7208 2.53738 29.9883 6.24707C27.9457 3.55158 24.3796 1.76468 20.3193 1.76465C13.9759 1.76465 8.83301 6.12312 8.83301 11.5C8.83305 16.8769 13.9759 21.2354 20.3193 21.2354C24.3807 21.2353 27.947 19.4468 29.9893 16.75Z" fill="#2BA69C"/>
                     <path d="M30.0896 7.25276C29.724 7.25276 29.4277 7.0041 29.4277 6.69737C29.4277 6.39064 29.724 6.14198 30.0896 6.14198C30.4551 6.14198 30.7515 6.39064 30.7515 6.69737C30.7515 7.0041 30.4551 7.25276 30.0896 7.25276Z" fill="#2BA69C"/>
@@ -45,48 +45,48 @@ onMounted(async () => {
                 </svg>
             </RouterLink>
             <div class="flex flex-col gap-3">
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
                     <span>Home</span>
                 </RouterLink>
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
                     <span>Explorar</span>
                 </RouterLink>
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
                     <span>Notificações</span>
                 </RouterLink>
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
                     <span>Livros</span>
                 </RouterLink>
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
                     <span>Listas</span>
                 </RouterLink>
-                <RouterLink :to="'/users/' + me.username" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink :to="'/users/' + me.username" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
                     <span>Profile</span>
                 </RouterLink>
             </div>
-            <button class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#18202C] font-bold justify-center">
+            <button class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
                 POSTAR
             </button>
         </div>
-        <button class="rounded-full bg-[#18202C] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between">
+        <button class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between">
             <div class="flex gap-3 items-center">
                 <div class="w-12 h-12 rounded-full bg-[#D9D9D9]"></div>
                 <div class="flex flex-col items-start">

@@ -8,10 +8,10 @@
     <Template>
         <div class="flex flex-col h-full">
             <div class="flex border-b-1 border-[#5A6270]">
-                <button class="px-2 py-6 bg-[#18202C] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer">
+                <button class="px-2 py-6 bg-[#0E121A] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer">
                     For you
                 </button>
-                <button class="px-2 py-6 bg-[#18202C] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer">
+                <button class="px-2 py-6 bg-[#0E121A] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer">
                     Seguindo
                 </button>
             </div>

@@ -5,20 +5,20 @@ import Register from '../pages/Register.vue'
 import NotFound from '../pages/NotFound.vue'
 import Notificacoes from '../pages/Notificacoes.vue'
 import User from '../pages/User.vue'
+import Explorar from '../pages/Explorar.vue'
+import Lists from '../pages/Lists.vue'
+
 
 const routes = [
-  { path: '/', component: Home },
+  { path: '/', component: Home, meta: { requiresAuth: true } },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { 
-    path: '/feed', 
-    component: () => import('../pages/Feed.vue'), 
-    meta: { requiresAuth: true } 
-  },
   { path: '/verificar-email', component: () => import('../pages/VerificarEmail.vue') },
   { path: '/notfound', component: NotFound },
-  { path: '/notificacoes', component: Notificacoes },
-  { path: '/users/:username', component: User },
+  { path: '/notificacoes', component: Notificacoes, meta: { requiresAuth: true } },
+  { path: '/users/:username', component: User, meta: { requiresAuth: true } },
+  { path: '/explorer', component: Explorar, meta: { requiresAuth: true } },
+  { path: '/users/:username/lists', component: Lists, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({

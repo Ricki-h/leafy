@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../services/api.js'
+import Template from './base/Template.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -21,11 +22,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-xl shadow text-center max-w-sm w-full">
-      <p v-if="erro" class="text-red-500">{{ erro }}</p>
-      <p v-else class="text-green-600">{{ mensagem }}</p>
-      <p v-if="!erro" class="text-gray-400 text-sm mt-2">Redirecionando para o login...</p>
+  <Template>
+    <div class="flex flex-col h-full justify-center items-center">
+      <div class="bg-white p-8 rounded-xl shadow text-center max-w-sm w-full">
+        <p v-if="erro" class="text-red-500">{{ erro }}</p>
+        <p v-else class="text-green-600">{{ mensagem }}</p>
+        <p v-if="!erro" class="text-gray-400 text-sm mt-2">Redirecionando para o login...</p>
+      </div>
     </div>
-  </main>
+  </Template>
 </template>

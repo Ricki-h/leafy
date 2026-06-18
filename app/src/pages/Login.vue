@@ -69,12 +69,12 @@ const handleLogin = async () => {
         <div class="flex gap-3">
           <button
             type="submit"
-            class="w-full text-xl bg-[#CCD6E5] text-[#18202C] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer"
+            class="w-full text-xl bg-[#CCD6E5] text-[#0E121A] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer"
           >
             Entrar
           </button>
           <RouterLink to="/register"
-            class="text-center w-full text-xl border-1 border-[#FF82BD] text-[#FF82BD] font-bold py-2 px-4 rounded-full hover:bg-[#FF82BD] hover:text-[#18202C] hover:cursor-pointer"
+            class="text-center w-full text-xl border-1 border-[#FF82BD] text-[#FF82BD] font-bold py-2 px-4 rounded-full hover:bg-[#FF82BD] hover:text-[#0E121A] hover:cursor-pointer"
           >
             Não tenho conta
           </RouterLink>
