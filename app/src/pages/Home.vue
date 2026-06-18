@@ -1,9 +1,8 @@
 <script setup>
-import MenuLeft from '../components/MenuLeft.vue';
-
+    import Template from './base/Template.vue';
 
 </script>
 
 <template>
-    <MenuLeft></MenuLeft>
+    <Template>home</Template>
 </template>
