@@ -1,9 +1,9 @@
 <script setup>
+import MenuLeft from '../components/MenuLeft.vue';
+
 
 </script>
 
 <template>
-    <section>
-        <h1 class="text-white">Home</h1>
-    </section>
+    <MenuLeft></MenuLeft>
 </template>
