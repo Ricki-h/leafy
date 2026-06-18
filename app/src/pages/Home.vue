@@ -15,7 +15,7 @@
                     Seguindo
                 </button>
             </div>
-            <div class="overflow-y-auto overflow-x-hidden">
+            <div class="overflow-y-auto">
                 <div class="px-8 py-3 flex gap-3" v-for="post in qtdposts">
                     <div class="min-w-12 h-12 rounded-full bg-[#D9D9D9] hover:cursor-pointer"></div>
                     <div class="flex flex-col gap-2">
