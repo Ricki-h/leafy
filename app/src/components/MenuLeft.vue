@@ -1,10 +1,30 @@
 <script setup>
-    import { RouterLink } from 'vue-router';
-    const username = 'ricki'
+import { RouterLink } from 'vue-router';
+import api from '../services/api';
+import { onMounted, ref } from 'vue';
+
+const me = ref(null)
+
+async function loadMe() {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'))
+        
+        const { data } = await api.get(`/users/${user.username}`)
+    
+        me.value = data
+    }
+    catch(err) {
+        console.error(err)
+    }
+}
+
+onMounted(async () => {
+    await loadMe()
+})
 </script>
 
 <template>
-    <aside class="min-h-screen w-full max-w-96 flex flex-col justify-between px-6 py-4 border-r border-r-[#5A6270]">
+    <aside v-if="me" class="min-h-screen w-full max-w-70 flex flex-col justify-between px-6 py-4 border-r border-r-[#5A6270]">
         <div class="flex flex-col gap-6">
             <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="23" viewBox="0 0 40 23" fill="none">
@@ -55,7 +75,7 @@
                     </svg>
                     <span>Listas</span>
                 </RouterLink>
-                <RouterLink :to="'/users/' + username" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink :to="'/users/' + me.username" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#18202C] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
@@ -70,8 +90,8 @@
             <div class="flex gap-3 items-center">
                 <div class="w-12 h-12 rounded-full bg-[#D9D9D9]"></div>
                 <div class="flex flex-col items-start">
-                    <p class="text-[#CCD6E5] text-base font-semibold">Nome da pessoa</p>
-                    <p class="text-[#5A6270] text-sm">@username</p>
+                    <p class="text-[#CCD6E5] text-base font-semibold">{{ me.name }}</p>
+                    <p class="text-[#5A6270] text-sm">{{ '@' + me.username }}</p>
                 </div>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="4" viewBox="0 0 18 4" fill="none">

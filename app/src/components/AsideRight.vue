@@ -1,11 +1,11 @@
 <script setup>
-    import { RouterLink } from 'vue-router';
-    const username = 'ricki'
+import { RouterLink } from 'vue-router';
+
     
 </script>
 
 <template>
-    <aside class="min-h-screen w-full max-w-96 flex flex-col gap-6 px-6 py-4 border-l border-l-[#5A6270]">
+    <aside class="min-h-screen w-full max-w-70 flex flex-col gap-6 px-6 py-4 border-l border-l-[#5A6270]">
         <label class="input bg-[#18202C] rounded-full text-[#5A6270] border-[#5A6270]">
             <svg class="h-4 opacity-50 fill-[#5A6270]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -59,6 +59,6 @@
             </RouterLink>
         </div>
         <hr class="border-[#5A6270]">
-        <p class="text-[#5A6270] text-xs/5">Termos de serviço | Política de privacidade | Política de cookies | Acessibilidade | © 2026 Leafy Corp.</p>
+        <p class="text-[#5A6270] text-xs/5">Termos de serviço | Política de privacidade | Política de cookies | Acessibilidade | ©2026 Leafy Corp.</p>
     </aside>
 </template>
