@@ -12,6 +12,7 @@ async function loadMe() {
         const { data } = await api.get(`/users/${user.username}`)
     
         me.value = data
+        console.log(data)
     }
     catch(err) {
         console.error(err)
@@ -88,7 +89,9 @@ onMounted(async () => {
         </div>
         <button class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between">
             <div class="flex gap-3 items-center">
-                <div class="w-12 h-12 rounded-full bg-[#D9D9D9]"></div>
+                <div class="w-12 h-12 rounded-full">
+                    <img :src="me.avatarUrl" alt="">
+                </div>
                 <div class="flex flex-col items-start">
                     <p class="text-[#CCD6E5] text-base font-semibold">{{ me.name }}</p>
                     <p class="text-[#5A6270] text-sm">{{ '@' + me.username }}</p>

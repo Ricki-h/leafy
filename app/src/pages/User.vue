@@ -5,9 +5,43 @@ import Template from './base/Template.vue'
 import api from '../services/api.js'
 
 const route = useRoute()
-const follows = 100
-const followers = 79
+const follows = ref(null)
+async function loadFollowsQtd() {
+    try {
+        const { data } = await api.get(`/users/${route.params.username}/followers`)
+        console.log(data)
+
+        follows.value = data.length
+    }
+    catch (err) {
+        console.error(err)
+    }
+}
+const following = ref(null)
+async function loadFollowingQtd() {
+    try {
+        const { data } = await api.get(`/users/${route.params.username}/following`)
+        console.log(data)
+        following.value = data.length
+    }
+    catch (err) {
+        console.error(err)
+    }
+}
+
 const qtdposts = 10
+
+async function follow() {
+    try {
+        await api.post(`/users/${route.params.username}/follow`)
+
+        await loadFollowingQtd()
+        await loadFollowsQtd()
+    }
+    catch (err) {
+        console.erroor(err)
+    }
+}
 
 const user = ref(null)
 async function loadUser() {
@@ -37,6 +71,8 @@ function voltar() {
 
 onMounted(async () => {
     await loadUser()
+    await loadFollowsQtd()
+    await loadFollowingQtd()
 })
 </script>
 
@@ -52,13 +88,13 @@ onMounted(async () => {
                 </button>   
             </div>
     
-            <div v-if="user">
+            <div v-if="user" class="h-full overflow-y-auto">
                 <div class="bg-[#054B84] h-38 w-full"></div>
-                <div class="px-8">
+                <div class="px-8 h-full">
                     <div class="flex items-start justify-end relative" v-if="user" >
                         <img :src="user.avatarUrl" alt="" class="rounded-full border-6 border-[#0E121A] w-35 h-35 absolute bottom-[-20px] left-0">
                         <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-if="isOwnProfile">Editar perfil</button>
-                        <button v-else>Seguir</button>
+                        <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-else @click="follow">Seguir</button>
                     </div>
                     <div>
                         <h6 class="mt-6 text-xl font-bold">{{ user.name }}</h6>
@@ -69,7 +105,7 @@ onMounted(async () => {
     
                     <div class="flex gap-4 mt-4">
                         <RouterLink :to="'/users/' + user.username + '/following'" class="flex gap-1.5">
-                            <span class="font-bold">{{ followers }}</span>
+                            <span class="font-bold">{{ following }}</span>
                             <span class="text-[#5A6270]">Following</span>
                         </RouterLink>
                         <RouterLink :to="'/users/' + user.username + '/followers'" class="flex gap-1.5">
@@ -78,12 +114,12 @@ onMounted(async () => {
                         </RouterLink>
                     </div>
     
-                    <div class="flex gap-4 mt-6 w-80">
+                    <div class="flex gap-4 mt-6 w-80 pb-4">
                         <RouterLink class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#682B9C] text-[#0E121A] hover:text-[#CCD6E5] font-bold rounded-full">Resenhas</RouterLink>
                         <RouterLink :to="'/users/' + user.username + '/lists'" class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#682B9C] text-[#0E121A] hover:text-[#CCD6E5] font-bold rounded-full">Listas</RouterLink>
                     </div>
     
-                    <div class="overflow-y-auto">
+                    <div class="">
                         <div class="px-8 py-3 flex gap-3" v-for="post in qtdposts">
                             <div class="min-w-12 h-12 rounded-full bg-[#D9D9D9] hover:cursor-pointer"></div>
                             <div class="flex flex-col gap-2">
