@@ -7,6 +7,8 @@ import Notificacoes from '../pages/Notificacoes.vue'
 import User from '../pages/User.vue'
 import Explorar from '../pages/Explorar.vue'
 import Lists from '../pages/Lists.vue'
+import SearchBooks from '../pages/SearchBooks.vue'
+
 
 
 const routes = [
@@ -19,6 +21,7 @@ const routes = [
   { path: '/users/:username', component: User, meta: { requiresAuth: true } },
   { path: '/explorer', component: Explorar, meta: { requiresAuth: true } },
   { path: '/users/:username/lists', component: Lists, meta: { requiresAuth: true } },
+  { path: '/books', component: SearchBooks, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
