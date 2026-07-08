@@ -10,13 +10,10 @@ import Lists from '../pages/Lists.vue'
 import SearchBooks from '../pages/SearchBooks.vue'
 import Book from '../pages/Book.vue'
 
-
-
 const routes = [
   { path: '/', component: Home, meta: { requiresAuth: true } },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { path: '/verificar-email', component: () => import('../pages/VerificarEmail.vue') },
   { path: '/notfound', component: NotFound },
   { path: '/notificacoes', component: Notificacoes, meta: { requiresAuth: true } },
   { path: '/users/:username', component: User, meta: { requiresAuth: true } },
