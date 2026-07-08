@@ -9,6 +9,7 @@ import Explorar from '../pages/Explorar.vue'
 import Lists from '../pages/Lists.vue'
 import SearchBooks from '../pages/SearchBooks.vue'
 import Book from '../pages/Book.vue'
+import Lista from '../pages/Lista.vue'
 
 
 
@@ -24,6 +25,7 @@ const routes = [
   { path: '/users/:username/lists', component: Lists, meta: { requiresAuth: true } },
   { path: '/books', component: SearchBooks, meta: { requiresAuth: true } },
   { path: '/books/:id', component: Book, meta: { requiresAuth: true } },
+  { path: '/users/:username/lists/lista', component: Lista, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({

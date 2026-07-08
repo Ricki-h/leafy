@@ -1,6 +1,6 @@
 <script setup>
     import Template from './base/Template.vue';
-
+    
     const qtdposts = 20
 </script>
 
