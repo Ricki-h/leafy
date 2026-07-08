@@ -34,7 +34,7 @@ function descricaoFormatada(descricao, max) {
                     <div class="flex flex-col justify-between">
                         <div class="flex flex-col gap-3">
                             <h3 class="font-bold text-[#CCD6E5] font-inter text-xl">{{ book.title }}</h3>
-                            <p class="font-inter text-sm text-[#6E7684]">{{ descricaoFormatada(book.description, 120) }}</p>
+                            <p class="font-inter text-sm text-[#6E7684]">{{ book.description ? descricaoFormatada(book.description, 120) : 'Livro sem descrição encontrada' }}</p>
                         </div>
 
                         <RouterLink class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#682B9C] text-[#0E121A] hover:text-[#CCD6E5] font-bold rounded-full " :to="`/books/${book.id}`">Ver detalhes</RouterLink>
