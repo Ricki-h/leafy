@@ -4,7 +4,6 @@
     const qtdposts = 20;
     import CardResenha from '../components/CardResenha.vue'
 </script>
-
 <template>
     <Template>
         <div class="flex flex-col h-full">
@@ -31,7 +30,7 @@
                     </div>
                 </div>
             </div>
-
+            
         </div>
     </Template>
-</template>
+</template> 
