@@ -18,22 +18,71 @@ const form = ref({
 
 const avatarFile = ref(null)
 const avatarPreview = ref(props.user.avatarUrl ?? null)
-
+const avatarInput = ref(null)
 
 function close() {
     emit('close')
+}
+
+function triggerAvatarInput() {
+    avatarInput.value?.click()
+}
+
+function onAvatarChange(event) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Opcional: validação básica de tipo/tamanho
+    if (!file.type.startsWith('image/')) {
+        console.error('Arquivo selecionado não é uma imagem')
+        return
+    }
+
+    avatarFile.value = file
+
+    // Libera a preview anterior (se era um blob criado por nós) antes de gerar uma nova
+    if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+        URL.revokeObjectURL(avatarPreview.value)
+    }
+    avatarPreview.value = URL.createObjectURL(file)
+
+    // Permite selecionar o mesmo arquivo novamente depois, se precisar
+    event.target.value = ''
+}
+
+function removeAvatar() {
+    if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+        URL.revokeObjectURL(avatarPreview.value)
+    }
+    avatarFile.value = null
+    avatarPreview.value = null
 }
 
 const saving = ref(false)
 async function save() {
     saving.value = true
     try {
-        const { data } = await api.patch('/users/me', {
+        // 1. Atualiza nome/bio (JSON) na rota de perfil
+        const { data: profileData } = await api.patch('/users/me', {
             name: form.value.name,
             bio: form.value.bio
         })
 
-        emit('updated', data)
+        let avatarData = null
+
+        // 2. Se houver uma foto nova, envia separadamente para a rota
+        //    dedicada de avatar (multipart/form-data, tratada via multer)
+        if (avatarFile.value) {
+            const formData = new FormData()
+            formData.append('avatar', avatarFile.value)
+
+            // Não define Content-Type manualmente: o axios/browser precisa
+            // gerar o header com o boundary correto para o multipart funcionar
+            const response = await api.patch('/users/me/avatar', formData)
+            avatarData = response.data
+        }
+
+        emit('updated', { ...profileData, ...avatarData })
         emit('close')
     } catch (err) {
         console.error(err)
@@ -74,6 +123,7 @@ async function save() {
             <!-- Banner roxo com os ícones de capa -->
             <div class="relative h-28 flex items-center justify-center gap-3 bg-[#682B9C]" >
                 <button
+                    type="button"
                     class="w-9 h-9 rounded-full bg-black/40 border border-white/10 text-white flex items-center justify-center hover:bg-black/60 transition"
                     aria-label="Remover capa"
                 >
@@ -82,6 +132,7 @@ async function save() {
                     </svg>
                 </button>
                 <button
+                    type="button"
                     class="w-9 h-9 rounded-full bg-black/40 border border-white/10 text-white flex items-center justify-center hover:bg-black/60 transition"
                     aria-label="Alterar capa"
                 >
@@ -91,16 +142,25 @@ async function save() {
                     </svg>
                 </button>
             </div>
-                
-            
 
             <!-- Avatar -->
             <div class="relative px-6">
                 <div class="-mt-10 mb-2">
                     <div class="relative w-20 h-20 rounded-full bg-gray-400 border-4 border-[#171a24] flex items-center justify-center overflow-hidden">
                         <img v-if="avatarPreview" :src="avatarPreview" class="w-full h-full object-cover" />
+
+                        <!-- Input de arquivo escondido -->
+                        <input
+                            ref="avatarInput"
+                            type="file"
+                            accept="image/*"
+                            class="hidden"
+                            @change="onAvatarChange"
+                        />
+
                         <button
-                            
+                            type="button"
+                            @click="triggerAvatarInput"
                             class="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition"
                             aria-label="Alterar foto de perfil"
                         >
@@ -110,7 +170,15 @@ async function save() {
                             </svg>
                         </button>
                     </div>
-                    
+
+                    <button
+                        v-if="avatarFile"
+                        type="button"
+                        @click="removeAvatar"
+                        class="mt-1 text-xs text-[#2BA69C] hover:underline"
+                    >
+                        Remover nova foto
+                    </button>
                 </div>
             </div>
 

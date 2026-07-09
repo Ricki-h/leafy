@@ -42,7 +42,6 @@
         await loadFeed()
     })
 </script>
-
 <template>
     <Template>
         <div class="flex flex-col h-full">
@@ -94,7 +93,7 @@
                 </div>
                 <Loading v-else class="mt-4"></Loading>
             </div>
-
+            
         </div>
     </Template>
-</template>
+</template> 
