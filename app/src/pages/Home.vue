@@ -57,7 +57,7 @@
             <div class="overflow-y-auto flex flex-col items-center">
                 <div v-if="loading == false" class="px-8 py-3 flex gap-3 border-b border-[#5A6270] w-full" v-for="post in feed.posts" :key="post.id">
                     <RouterLink :to="`/users/${post.user.username}`" class="w-12 h-12 rounded-full hover:cursor-pointer">
-                        <img :src="post.user.avatarUrl" alt="" class="w-full min-w-12">
+                        <img :src="post.user.avatarUrl" alt="" class="w-full min-w-12 rounded-full">
                     </RouterLink>
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
