@@ -48,6 +48,7 @@ async function loadUser() {
         const { data } = await api.get(`/users/${route.params.username}`)
 
         user.value = data
+        console.log(data)
     } catch (err) {
         console.error(err)
     }
@@ -135,7 +136,7 @@ onMounted(async () => {
                         <div class="flex items-start justify-end relative" v-if="user" >
                             <img :src="user.avatarUrl" alt="" class="rounded-full border-6 border-[#0E121A] w-35 h-35 absolute bottom-[-20px] left-0">
                             <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-if="isOwnProfile">Editar perfil</button>
-                            <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-else @click="follow">Seguir</button>
+                            <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-else @click="follow">{{ user.isFollowing ? 'Seguindo' : 'Seguir' }}</button>
                         </div>
                         <div>
                             <h6 class="mt-6 text-xl font-bold">{{ user.name }}</h6>
