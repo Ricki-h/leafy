@@ -1,12 +1,19 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import api from '../services/api';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 
+const me = ref(null)
+const content = ref('')
 
+const counterColor = computed(() => {
+    if (content.value.length >= 280) return 'text-[#FF82BD]'
+    if (content.value.length > 200) return 'text-[#974EFD]'
+    return 'text-[#5A6270]'
+})
 
-const me = ref(null);
-const showModal = ref(false)
+const postando = ref(false)
+const loadingPost = ref(false)
 
 async function loadMe() {
     try {
@@ -20,6 +27,22 @@ async function loadMe() {
     catch(err) {
         console.error(err)
     }
+}
+
+async function postar() {
+    try {
+        loadingPost.value = true
+        await api.post('/posts/', {
+            content: content.value
+        })
+
+        content.value = ''
+        postando.value = false
+    }
+    catch(err) {
+        console.error(err)
+    }
+    loadingPost.value = false
 }
 
 onMounted(async () => {
@@ -86,7 +109,7 @@ onMounted(async () => {
                     <span>Profile</span>
                 </RouterLink>
             </div>
-            <button @click="showModal=true" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
+            <button @click="postando = true" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
                 POSTAR
             </button>
         </div>
@@ -105,4 +128,36 @@ onMounted(async () => {
             </svg>
         </button>
     </aside>
+
+    <div v-if="postando == true" class="absolute flex w-full h-full bg-[#110B2A]/40 top-0 right-0 z-2 justify-center">
+        <div class="flex flex-col gap-3 items-start bg-[#18202C] p-8 rounded-lg w-150 mt-8 h-fit">
+            <button @click="postando = false" class="p-2 rounded-full hover:bg-[#202b3a] hover:cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M1 15L8 8M8 8L15 1M8 8L1 1M8 8L15 15" stroke="#FF82BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <div class="flex gap-4 w-full">
+                <div class="w-10 h-10">
+                    <img :src="me.avatarUrl" alt="">
+                </div>
+                <textarea
+                name="content"
+                v-model="content"
+                placeholder="O que você está lendo hoje?"
+                rows="3"
+                maxlength="280"
+                class="resize-none field-sizing-content border-none focus:outline-none focus:ring-0 text-[#CCD6E5] text-lg placeholder-[#5A6270] w-full bg-transparent min-h-10"
+                ></textarea>
+            </div>
+
+            <div class="flex items-center justify-between w-full mt-4">
+                <button @click="postar" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-3 py-2 text-center flex items-center hover:cursor-pointer w-30 text-[#0E121A] font-bold justify-center" :disabled="loadingPost">
+                    {{ loadingPost ? 'Postando' : 'Postar' }}
+                </button>
+                
+                <span class="text-sm" :class="counterColor">{{ content.length }}
+                    <span class="text-[#5A6270]"> / 280</span></span>
+            </div>
+        </div>
+    </div>
 </template>
