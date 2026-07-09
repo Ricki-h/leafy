@@ -3,12 +3,14 @@ import { onMounted, ref } from 'vue';
 import Loading from '../components/Loading.vue';
 import Template from './base/Template.vue';
 import CriarPost from '../components/CriarPost.vue';
+import ModalEscolherLista from '../components/ModalEscolherLista.vue';
 import api from '../services/api.js';
 import { useRoute } from 'vue-router';
 
 const loading = ref(false)
 const book = ref(null)
 const showModal = ref(false)
+const showListModal = ref(false)
 
 const route = useRoute()
 async function loadBook() {
@@ -78,7 +80,7 @@ onMounted(async () => {
                         <p class="font-semibold text-[#FF82BD]">{{ book.isbn || 'Código IBSN não encontrado' }}</p>
                     </div>
                     <div class="flex flex-col gap-4">
-                        <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#2BA69C] text-[#0E121A] font-bold rounded-full">Adicionar a uma lista</button>
+                        <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#2BA69C] text-[#0E121A] font-bold rounded-full" @click="showListModal = true">Adicionar a uma lista</button>
                         <div class="flex gap-4">
                             <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#FF82BD] text-[#0E121A] font-bold rounded-full">Avaliar</button>
                             <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#FF82BD] text-[#0E121A] font-bold rounded-full" @click="showModal = true">Escrever uma resenha</button>
@@ -90,6 +92,12 @@ onMounted(async () => {
                 v-if="showModal"
                 @close="showModal = false"
                 @postar="handlePostar"
+            />
+            <ModalEscolherLista
+                v-if="showListModal"
+                :book-id="book?.id"
+                :book-title="book?.title"
+                @close="showListModal = false"
             />
         </div>
     </Template>

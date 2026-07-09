@@ -21,6 +21,8 @@ const routes = [
   { path: '/users/:username', component: User, meta: { requiresAuth: true } },
   { path: '/explorer', component: Explorar, meta: { requiresAuth: true } },
   { path: '/users/:username/lists', component: Lists, meta: { requiresAuth: true } },
+  { path: '/lists/:id', component: Lista, meta: { requiresAuth: true } },
+  
   { path: '/books', component: SearchBooks, meta: { requiresAuth: true } },
   { path: '/books/:id', component: Book, meta: { requiresAuth: true } },
   { path: '/post/:id', component: Post, meta: { requiresAuth: true } },
