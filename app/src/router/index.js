@@ -10,6 +10,7 @@ import Lists from '../pages/Lists.vue'
 import SearchBooks from '../pages/SearchBooks.vue'
 import Book from '../pages/Book.vue'
 import Post from '../pages/Post.vue'
+import Lista from '../pages/Lista.vue'
 
 const routes = [
   { path: '/', component: Home, meta: { requiresAuth: true } },
@@ -23,6 +24,7 @@ const routes = [
   { path: '/books', component: SearchBooks, meta: { requiresAuth: true } },
   { path: '/books/:id', component: Book, meta: { requiresAuth: true } },
   { path: '/post/:id', component: Post, meta: { requiresAuth: true } },
+  { path: '/users/:username/lists/lista', component: Lista, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({
