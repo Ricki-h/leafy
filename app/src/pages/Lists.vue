@@ -1,33 +1,72 @@
-<script setup>
-    import { RouterLink } from 'vue-router';
-    import Template from './base/Template.vue';
-    const username = 'ricki'
-    const id = 1
-    const qtdListas = 12
-    function voltar() {
-        window.history.back()
-    }
-</script>
-
 <template>
     <Template variant="left">
-        <div class="flex flex-col h-full border-r border-[#5A6270]">
-            <div class="flex border-b border-[#5A6270] px-8 py-6">
-                <button @click="voltar" class="flex items-center gap-2 hover:cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="16" viewBox="0 0 12 19" fill="none">
-                        <path d="M4.01878 9.4335L10.618 16.0327C10.9282 16.3429 11.0833 16.7378 11.0833 17.2172C11.0833 17.6966 10.9282 18.0915 10.618 18.4017C10.3078 18.7119 9.91296 18.867 9.43353 18.867C8.9541 18.867 8.55927 18.7119 8.24905 18.4017L0.465355 10.618C0.296144 10.4488 0.176569 10.2655 0.106628 10.068C0.0366879 9.87063 0.0011541 9.65912 2.60328e-05 9.4335C-0.00110204 9.20789 0.0344318 8.99637 0.106628 8.79896C0.178825 8.60155 0.2984 8.41824 0.465355 8.24903L8.24905 0.465329C8.55927 0.155109 8.9541 0 9.43353 0C9.91296 0 10.3078 0.155109 10.618 0.465329C10.9282 0.775549 11.0833 1.17037 11.0833 1.64981C11.0833 2.12924 10.9282 2.52406 10.618 2.83428L4.01878 9.4335Z" fill="#CCD6E5"/>
-                    </svg>
-                    <span>voltar</span>
-                </button>   
+          <div class="w-full h-full overflow-y-auto bg-[#151823] px-6 py-6">
+            <!-- Title -->
+            <h1 class="text-center text-2xl font-bold text-white mb-4">
+            Listas de <span class="text-teal-400">usuário</span>
+            </h1>
+
+            <!-- Divider -->
+            <div class="w-full max-w-[826px] mx-auto h-[2px] bg-pink-500 mb-10"></div>
+
+            <!-- Grid -->
+            <div class="max-w-[826px] mx-auto grid grid-cols-2 sm:grid-cols-4 gap-x-10 gap-y-5">
+            <div
+                v-for="(list, index) in lists"
+                :key="index"
+                class="flex flex-col items-center"
+            >
+                <div class="relative w-full aspect-[3/4] bg-gray-300 rounded-sm overflow-hidden">
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <line x1="0" y1="0" x2="100" y2="100" stroke="#4b5563" stroke-width="0.5" />
+                    <line x1="100" y1="0" x2="0" y2="100" stroke="#4b5563" stroke-width="0.5" />
+                </svg>
+                </div>
+
+                <span class="mt-3 text-white text-sm font-medium text-center">
+                {{ list.name }}
+                </span>
+            </div>
             </div>
 
-            <div class="grid grid-cols-4 px-8 mt-6 gap-8">
-                <RouterLink :to="'/users/' + username + '/lists/' + id" class="w-full bg-[#18202C] hover:cursor-pointer hover:bg-[#2E3B4E] p-4 rounded-md" v-for="qtd in qtdListas">
-                    <div class="w-full aspect-square bg-[#D9D9D9]"></div>
-                    <h6 class=" mt-3 text-xl font-bold">Nome da lista</h6>
-                    <p class="text-[#5A6270]">67 livros adicionados</p>
-                </RouterLink>
+            <!-- Pagination -->
+            <div class="flex items-center justify-center gap-3 mt-10">
+            <button
+                v-for="page in totalPages"
+                :key="page"
+                @click="currentPage = page"
+                class="w-8 h-8 rounded-full text-white text-sm font-semibold flex items-center justify-center transition-opacity"
+                :class="page === currentPage ? 'bg-purple-500' : 'bg-purple-500/70 hover:opacity-90'"
+            >
+                {{ page }}
+            </button>
             </div>
         </div>
     </Template>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import Template from './base/Template.vue';
+defineProps({
+  lists: {
+    type: Array,
+    default: () => [
+      { name: 'Lista de favoritos' },
+      { name: 'Próximos para ler' },
+      { name: 'Quero ler' },
+      { name: 'Estou lendo' },
+      { name: 'Livros de romance' },
+      { name: 'Livros de aventura' },
+      { name: 'Livros de comédia' },
+      { name: 'Livros de aventura' },
+    ],
+  },
+  totalPages: {
+    type: Number,
+    default: 3,
+  },
+})
+
+const currentPage = ref(1)
+</script>
