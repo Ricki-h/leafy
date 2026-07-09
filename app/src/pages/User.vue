@@ -3,11 +3,13 @@ import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import Template from './base/Template.vue'
 import api from '../services/api.js'
+import EditarPerfil from '../components/EditarPerfil.vue'
 
 const tab = ref('posts')
 
 const route = useRoute()
 const follows = ref(null)
+const showEditModal = ref(false)
 async function loadFollowsQtd() {
     try {
         const { data } = await api.get(`/users/${route.params.username}/followers`)
@@ -253,6 +255,14 @@ onMounted(async () => {
                 </div>
     
             </div>
+            
         </div>
+        
     </Template>
+    <EditarPerfil
+        v-if="showEditModal"
+        :user="user"
+        @close="showEditModal = false"
+        @updated="(updatedUser) => user = updatedUser"
+    />
 </template>

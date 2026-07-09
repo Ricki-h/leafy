@@ -2,11 +2,13 @@
 import { onMounted, ref } from 'vue';
 import Loading from '../components/Loading.vue';
 import Template from './base/Template.vue';
+import CriarPost from '../components/CriarPost.vue';
 import api from '../services/api.js';
 import { useRoute } from 'vue-router';
 
 const loading = ref(false)
 const book = ref(null)
+const showModal = ref(false)
 
 const route = useRoute()
 async function loadBook() {
@@ -23,7 +25,18 @@ async function loadBook() {
 function voltar() {
     window.history.back()
 }
-
+function handlePostar(dados) {
+    
+    try {
+        api.post(`/resenhas/:bookid`)
+        console.log('avaliação enviada:', dados)
+    }
+    
+    catch(err) {
+        console.error(err)
+    }
+    showModal.value = false
+}
 onMounted(async () => {
     await loadBook()
 })
@@ -68,11 +81,16 @@ onMounted(async () => {
                         <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#2BA69C] text-[#0E121A] font-bold rounded-full">Adicionar a uma lista</button>
                         <div class="flex gap-4">
                             <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#FF82BD] text-[#0E121A] font-bold rounded-full">Avaliar</button>
-                            <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#FF82BD] text-[#0E121A] font-bold rounded-full">Escrever uma resenha</button>
+                            <button class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#FF82BD] text-[#0E121A] font-bold rounded-full" @click="showModal = true">Escrever uma resenha</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <CriarPost
+                v-if="showModal"
+                @close="showModal = false"
+                @postar="handlePostar"
+            />
         </div>
     </Template>
 </template>
