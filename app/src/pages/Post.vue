@@ -1,8 +1,9 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, onBeforeUnmount, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import Template from './base/Template.vue'
 import api from '../services/api.js'
+import autosize from 'autosize'
 
 const route = useRoute()
 
@@ -54,14 +55,58 @@ async function toggleLike(post) {
     }
 }
 
+const me = ref(null)
+async function loadMe() {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'))
+        
+        const { data } = await api.get(`/users/${user.username}`)
+    
+        me.value = data
+        console.log(data)
+    }
+    catch(err) {
+        console.error(err)
+    }
+}
+
+const loadingPost = ref(false)
+async function responder() {
+    try {
+        loadingPost.value = true
+        await api.post('/posts/', {
+            content: content.value,
+            paremtId: post.id
+        })
+        
+        content.value = ''
+    }
+    catch(err) {
+        console.error(err)
+    }
+    loadingPost.value = false
+}
+
+const textarea = ref(null)
+
 onMounted(async () => {
-    await loadPost()
+    await Promise.all([
+        loadMe(),
+        loadPost()
+    ])
+
+    await nextTick()
+
+    autosize(textarea.value)
+})
+onBeforeUnmount(() => {
+  autosize.destroy(textarea.value)
 })
 </script>
 
 <template>
     <Template>
-        <div class="flex flex-col h-screen">
+        <div v-if="loading == false" class="flex flex-col h-screen">
             <div class="flex border-b border-[#5A6270] px-8 py-6">
                 <button @click="voltar" class="flex items-center gap-2 hover:cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="9" height="16" viewBox="0 0 12 19" fill="none">
@@ -71,16 +116,18 @@ onMounted(async () => {
                 </button>   
             </div>
             <div class="flex flex-col items-center">
-                <div v-if="loading == false" class="px-8 py-3 flex gap-3 border-b border-[#5A6270] w-full">
-                    <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer">
-                        <img :src="post.user.avatarUrl" alt="" class="w-full">
-                    </RouterLink>
-                    <div class="flex flex-col gap-2">
-                        <div class="flex items-center gap-2">
-                            <p class="text-[#CCD6E5] text-sm font-semibold">{{ post.user.name }}</p>
-                            <p class="text-[#5A6270] text-sm hover:cursor-pointer">{{ '@' + post.user.username }}</p>
+                <div class="px-8 py-3 flex flex-col gap-3 border-b border-[#5A6270] w-full">
+                    <div class="flex gap-3">
+                        <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer">
+                            <img :src="post.user.avatarUrl" alt="" class="w-full">
+                        </RouterLink>
+                        <div>
+                            <p class="text-[#CCD6E5] font-semibold">{{ post.user.name }}</p>
+                            <p class="text-[#5A6270] hover:cursor-pointer">{{ '@' + post.user.username }}</p>
                         </div>
-                        <p class="text-[#CCD6E5] text-sm">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="text-[#CCD6E5]">
                             {{ post.content }}
                         </p>
                         <div class="flex gap-4 text-[#5A6270] text-sm">
@@ -108,8 +155,26 @@ onMounted(async () => {
                         </div>
                     </div>
                 </div>
-                <Loading v-else class="mt-8"></Loading>
+                
             </div>
+            <div class="px-8 py-4 border-b border-[#5A6270] flex flex-col gap-4">
+                <p class="text-[#5A6270]">Respondendo a <span class="text-[#2BA69C]">{{ '@' + post.user.username }}</span></p>
+                <div class="flex gap-4">
+                    <img :src="me.avatarUrl" alt="" class="w-12 h-12">
+                    <textarea
+                    ref="textarea"
+                    v-model="content"
+                    maxlength="280"
+                    placeholder="Poste a sua resposta"
+                    class="w-full resize-none overflow-hidden bg-transparent border-none focus:outline-none focus:ring-0 text-[#CCD6E5] placeholder-[#5A6270]"
+                    ></textarea>
+                    <button @click="responder" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-6 text-center flex items-center hover:cursor-pointer text-[#0E121A] font-bold justify-center" :disabled="loadingPost">
+                        {{ loadingPost ? 'Respondendo' : 'Responder' }}
+                    </button>
+                </div>
+            </div>
+            
         </div>
+        <Loading v-else class="mt-8"></Loading>
     </Template>
 </template>

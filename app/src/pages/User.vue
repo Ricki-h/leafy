@@ -177,7 +177,7 @@ onMounted(async () => {
                     <div v-if="tab == 'posts'">
                         <div class="px-8 py-3 flex gap-3 border-b border-[#5A6270]" v-for="post in posts" :key="post.id">
                             <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer">
-                                <img :src="user.avatarUrl" alt="" class="w-full">
+                                <img :src="user.avatarUrl" alt="" class="w-full min-w-12">
                             </RouterLink>
                             <div class="flex flex-col gap-2">
                                 <div class="flex items-center gap-2">

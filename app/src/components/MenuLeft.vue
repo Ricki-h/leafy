@@ -3,7 +3,6 @@ import { RouterLink } from 'vue-router';
 import api from '../services/api';
 import { onMounted, ref, computed } from 'vue';
 
-const me = ref(null)
 const content = ref('')
 
 const counterColor = computed(() => {
@@ -13,8 +12,8 @@ const counterColor = computed(() => {
 })
 
 const postando = ref(false)
-const loadingPost = ref(false)
 
+const me = ref(null)
 async function loadMe() {
     try {
         const user = JSON.parse(localStorage.getItem('user'))
@@ -29,6 +28,7 @@ async function loadMe() {
     }
 }
 
+const loadingPost = ref(false)
 async function postar() {
     try {
         loadingPost.value = true
@@ -116,7 +116,7 @@ onMounted(async () => {
         <button class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between">
             <div class="flex gap-3 items-center">
                 <div class="w-12 h-12 rounded-full">
-                    <img :src="me.avatarUrl" alt="">
+                    <img :src="me.avatarUrl" alt="" class="rounded-full">
                 </div>
                 <div class="flex flex-col items-start">
                     <p class="text-[#CCD6E5] text-base font-semibold">{{ me.name }}</p>
