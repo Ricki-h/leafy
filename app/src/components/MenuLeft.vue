@@ -5,6 +5,8 @@ import { onMounted, ref } from 'vue';
 
 const me = ref(null)
 
+const postando = ref(false)
+
 async function loadMe() {
     try {
         const user = JSON.parse(localStorage.getItem('user'))
@@ -83,7 +85,7 @@ onMounted(async () => {
                     <span>Profile</span>
                 </RouterLink>
             </div>
-            <button class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
+            <button @click="postando = true" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
                 POSTAR
             </button>
         </div>
@@ -102,4 +104,31 @@ onMounted(async () => {
             </svg>
         </button>
     </aside>
+
+    <div v-if="postando == true" class="absolute flex w-full h-full bg-[#110B2A]/40 top-0 right-0 z-2 items-center justify-center">
+        <div class="flex flex-col gap-2 items-start bg-[#18202C] p-4 rounded-lg w-120">
+            <button @click="postando = false" class="p-2 rounded-full hover:bg-[#202b3a] hover:cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M1 15L8 8M8 8L15 1M8 8L1 1M8 8L15 15" stroke="#FF82BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <div class="flex gap-4 w-full">
+                <div class="w-10 h-10">
+                    <img :src="me.avatarUrl" alt="">
+                </div>
+                <textarea
+                name="content"
+                v-model="content"
+                placeholder="O que você está lendo hoje?"
+                rows="3"
+                maxlength="280"
+                class="resize-none overflow-hidden border-none focus:outline-none focus:ring-0 text-[#CCD6E5] text-lg placeholder-[#5A6270] w-full bg-transparent"
+                ></textarea>
+            </div>
+
+            <button @click="postando = true" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-3 py-2 text-center flex items-center hover:cursor-pointer w-30 text-[#0E121A] font-bold justify-center">
+                Postar
+            </button>
+        </div>
+    </div>
 </template>
