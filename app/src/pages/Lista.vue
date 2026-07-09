@@ -46,16 +46,16 @@ const currentPage = ref(1)
                     </div>
                 </div>
             </div>
-            <div class="w-full max-w-[826px] mx-auto h-[2px] bg-pink-500 mb-10"></div>
-            <div class="grid grid-cols-4">
-                <div v-for="(list, index) in lists" class="flex flex-col ">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="155" height="231" viewBox="0 0 155 231" fill="none">
+            <div class="w-full max-w-[876px] mx-auto h-[2px] bg-pink-500 mb-10"></div>
+            <div class="grid grid-cols-4 overflow-y-auto max-w-[876px] max-h-[360px] max-lg:max-h-[380px] justify-between gap-x-6 gap-y-8">
+                <div v-for="(list, index) in lists" :key="index" class="flex flex-col mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-auto " viewBox="0 0 155 231" fill="none">
                         <path d="M0.5 230.5V0.5H154.413V230.5H0.5ZM0.5 0.5L77.5 115.5M0.5 230.5L77.5 115.5M154.5 0.5L77.5 115.5M77.5 115.5L154.5 230.5" stroke="black"/>
                     </svg>
-                    <p>
-                        {{ list.name }}
+                    <p class="font-semibold text-[#FFD4E8] ">
+                        Titulo
                     </p>
-                    <p>
+                    <p class="text-xs">
                         Autor(a)
                     </p>
 

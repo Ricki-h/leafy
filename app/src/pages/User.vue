@@ -3,9 +3,11 @@ import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import Template from './base/Template.vue'
 import api from '../services/api.js'
+import EditarPerfil from '../components/EditarPerfil.vue'
 
 const route = useRoute()
 const follows = ref(null)
+const showEditModal = ref(false)
 async function loadFollowsQtd() {
     try {
         const { data } = await api.get(`/users/${route.params.username}/followers`)
@@ -93,7 +95,7 @@ onMounted(async () => {
                 <div class="px-8 h-full">
                     <div class="flex items-start justify-end relative" v-if="user" >
                         <img :src="user.avatarUrl" alt="" class="rounded-full border-6 border-[#0E121A] w-35 h-35 absolute bottom-[-20px] left-0">
-                        <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-if="isOwnProfile">Editar perfil</button>
+                        <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-if="isOwnProfile" @click="showEditModal = true">Editar perfil</button>
                         <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-else @click="follow">Seguir</button>
                     </div>
                     <div>
@@ -137,6 +139,14 @@ onMounted(async () => {
                 </div>
     
             </div>
+            
         </div>
+        
     </Template>
+    <EditarPerfil
+        v-if="showEditModal"
+        :user="user"
+        @close="showEditModal = false"
+        @updated="(updatedUser) => user = updatedUser"
+    />
 </template>

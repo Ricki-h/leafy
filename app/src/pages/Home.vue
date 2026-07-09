@@ -1,7 +1,8 @@
 <script setup>
     import Template from './base/Template.vue';
     
-    const qtdposts = 20
+    const qtdposts = 20;
+    import CardResenha from '../components/CardResenha.vue'
 </script>
 
 <template>
@@ -30,6 +31,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </Template>
 </template>

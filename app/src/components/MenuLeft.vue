@@ -3,7 +3,10 @@ import { RouterLink } from 'vue-router';
 import api from '../services/api';
 import { onMounted, ref } from 'vue';
 
-const me = ref(null)
+
+
+const me = ref(null);
+const showModal = ref(false)
 
 async function loadMe() {
     try {
@@ -83,7 +86,7 @@ onMounted(async () => {
                     <span>Profile</span>
                 </RouterLink>
             </div>
-            <button class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
+            <button @click="showModal=true" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
                 POSTAR
             </button>
         </div>
