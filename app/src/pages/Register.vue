@@ -17,7 +17,7 @@ const handleRegister = async () => {
   try {
     error.value = ''
 
-    await api.post('/auth/register', {
+    const { data } = await api.post('/auth/register', {
       name: name.value,
       username: username.value,
       email: email.value,
@@ -25,7 +25,10 @@ const handleRegister = async () => {
       birthDate: birthDate.value
     })
 
-    router.push('/login')
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('user', JSON.stringify(data.user))
+
+    router.push('/')
   } catch (err) {
     error.value = err.response?.data?.error || 'Erro ao criar conta.'
   }

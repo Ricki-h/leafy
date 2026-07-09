@@ -9,15 +9,12 @@ import Explorar from '../pages/Explorar.vue'
 import Lists from '../pages/Lists.vue'
 import SearchBooks from '../pages/SearchBooks.vue'
 import Book from '../pages/Book.vue'
-import Lista from '../pages/Lista.vue'
-
-
+import Post from '../pages/Post.vue'
 
 const routes = [
   { path: '/', component: Home, meta: { requiresAuth: true } },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { path: '/verificar-email', component: () => import('../pages/VerificarEmail.vue') },
   { path: '/notfound', component: NotFound },
   { path: '/notificacoes', component: Notificacoes, meta: { requiresAuth: true } },
   { path: '/users/:username', component: User, meta: { requiresAuth: true } },
@@ -25,7 +22,7 @@ const routes = [
   { path: '/users/:username/lists', component: Lists, meta: { requiresAuth: true } },
   { path: '/books', component: SearchBooks, meta: { requiresAuth: true } },
   { path: '/books/:id', component: Book, meta: { requiresAuth: true } },
-  { path: '/users/:username/lists/lista', component: Lista, meta: { requiresAuth: true } }
+  { path: '/post/:id', component: Post, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
