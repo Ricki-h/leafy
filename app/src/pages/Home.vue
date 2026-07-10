@@ -6,12 +6,18 @@
     const loading = ref(null)
 
     const tab = ref('all')
+    function switchTab(newTab) {
+        tab.value = newTab
+        loadFeed()
+    }
 
     const feed = ref(null)
     async function loadFeed() {
         try {
             loading.value = true
-            const { data } = await api.get('/posts/feed')
+
+            const endpoint = tab.value === 'following' ? '/posts/feed/following' : '/posts/feed'
+            const { data } = await api.get(endpoint)
     
             feed.value = data
             
@@ -46,17 +52,17 @@
     <Template>
         <div class="flex flex-col h-full">
             <div class="flex ">
-                <button @click="tab = 'all'" class="border-b px-2 py-6 bg-[#0E121A] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer" :class="tab == 'all' ? 'text-[#CCD6E5] border-[#682B9C] font-bold' : 'text-[#5A6270] border-[#5A6270]'">
+                <button @click="switchTab('all')" class="border-b px-2 py-6 bg-[#0E121A] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer" :class="tab == 'all' ? 'text-[#CCD6E5] border-[#682B9C] font-bold' : 'text-[#5A6270] border-[#5A6270]'">
                     For you
                 </button>
-                <button @click="tab = 'following'" class="border-b px-2 py-6 bg-[#0E121A] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer" :class="tab == 'following' ? 'text-[#CCD6E5] border-[#682B9C] font-bold' : 'text-[#5A6270] border-[#5A6270]'">
+                <button @click="switchTab('following')" class="border-b px-2 py-6 bg-[#0E121A] text-[#5A6270] hover:bg-[#2E3B4E] text-base w-full hover:cursor-pointer" :class="tab == 'following' ? 'text-[#CCD6E5] border-[#682B9C] font-bold' : 'text-[#5A6270] border-[#5A6270]'">
                     Seguindo
                 </button>
             </div>
             <div class="overflow-y-auto flex flex-col items-center">
                 <div v-if="loading == false" class="px-8 py-3 flex gap-3 border-b border-[#5A6270] w-full" v-for="post in feed.posts" :key="post.id">
-                    <RouterLink :to="`/users/${post.user.username}`" class="w-12 h-12 rounded-full hover:cursor-pointer">
-                        <img :src="post.user.avatarUrl" alt="" class="w-full min-w-12 rounded-full">
+                    <RouterLink :to="`/users/${post.user.username}`" class="min-w-12 h-12 rounded-full hover:cursor-pointer overflow-hidden">
+                        <img :src="post.user.avatarUrl" alt="" class="w-12 rounded-full">
                     </RouterLink>
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">

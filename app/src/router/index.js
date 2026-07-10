@@ -26,7 +26,6 @@ const routes = [
   { path: '/books', component: SearchBooks, meta: { requiresAuth: true } },
   { path: '/books/:id', component: Book, meta: { requiresAuth: true } },
   { path: '/post/:id', component: Post, meta: { requiresAuth: true } },
-  { path: '/users/:username/lists/lista', component: Lista, meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({

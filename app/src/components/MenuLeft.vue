@@ -21,7 +21,6 @@ async function loadMe() {
         const { data } = await api.get(`/users/${user.username}`)
     
         me.value = data
-        console.log(data)
     }
     catch(err) {
         console.error(err)
@@ -115,7 +114,7 @@ onMounted(async () => {
         </div>
         <button class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between">
             <div class="flex gap-3 items-center">
-                <div class="w-12 h-12 rounded-full">
+                <div class="w-12 h-12 rounded-full overflow-hidden">
                     <img :src="me.avatarUrl" alt="" class="rounded-full">
                 </div>
                 <div class="flex flex-col items-start">
@@ -137,8 +136,8 @@ onMounted(async () => {
                 </svg>
             </button>
             <div class="flex gap-4 w-full">
-                <div class="w-10 h-10">
-                    <img :src="me.avatarUrl" alt="">
+                <div class="min-w-12 h-12 overflow-hidden rounded-full">
+                    <img :src="me.avatarUrl" alt="" class="rounded-full w-12">
                 </div>
                 <textarea
                 name="content"

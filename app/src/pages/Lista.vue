@@ -7,7 +7,6 @@ import api from '../services/api.js'
 const route = useRoute()
 
 const list = ref(null)
-const owner = ref(null)
 const loading = ref(true)
 const error = ref(null)
 
@@ -20,16 +19,6 @@ async function loadList() {
     const { data } = await api.get(`/lists/${route.params.id}`)
     list.value = data
 
-    // getList não inclui o User dono da lista, então busca à parte
-    // usando o userId que já vem na própria linha da BookList.
-    if (data?.userId) {
-      try {
-        const { data: userData } = await api.get(`/users/${data.userId}`)
-        owner.value = userData
-      } catch (err) {
-        console.error('Não foi possível carregar o dono da lista:', err)
-      }
-    }
   } catch (err) {
     console.error(err)
     error.value = 'Não foi possível carregar essa lista.'
@@ -59,9 +48,9 @@ onMounted(loadList)
                 <div class="flex items-center gap-x-6 mb-6">
                     <div class="w-[223px] h-[223px] bg-gray-200 overflow-hidden">
                         <img
-                            v-if="owner?.avatarUrl"
-                            :src="owner.avatarUrl"
-                            :alt="owner?.username"
+                            v-if="list.user.avatarUrl"
+                            :src="list.user.avatarUrl"
+                            :alt="list.user.username"
                             class="w-full h-full object-cover"
                         />
                     </div>
@@ -71,7 +60,7 @@ onMounted(loadList)
                         </h2>
                         <div class="flex items-center gap-2">
                             <p class="text-[#2BA69C]">
-                                @{{ owner?.username || 'usuário' }}
+                                @{{ list.user?.username || 'usuário' }}
                             </p>
                             <button class="px-3 py-2 bg-gray-200 text-black rounded-[50px]">
                                 {{ bookCount }} {{ bookCount === 1 ? 'livro' : 'livros' }}
@@ -90,7 +79,7 @@ onMounted(loadList)
                     <router-link
                         v-for="item in list.items"
                         :key="item.book.id"
-                        :to="`/livros/${item.book.id}`"
+                        :to="`/books/${item.book.id}`"
                         class="flex flex-col mb-4 cursor-pointer"
                     >
                         <img

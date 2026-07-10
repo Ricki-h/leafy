@@ -136,7 +136,7 @@ onMounted(async () => {
                 <div class="h-full">
                     <div class="px-8">
                         <div class="flex items-start justify-end relative" v-if="user" >
-                            <img :src="user.avatarUrl" alt="" class="rounded-full border-6 border-[#0E121A] w-35 h-35 absolute bottom-[-20px] left-0">
+                            <img :src="user.avatarUrl" alt="" class="rounded-full border-6 border-[#0E121A] w-35 h-35 absolute bottom-[-20px] left-0 object-cover">
                             <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-if="isOwnProfile" @click="showEditModal = true">Editar perfil</button>
                             <button class="mt-3 font-bold hover:text-[#0E121A] px-4 py-2 text-[#2BA69C] border-1 border-[#2BA69C] rounded-full hover:bg-[#2BA69C] hover:cursor-pointer " v-else @click="follow">{{ user.isFollowing ? 'Seguindo' : 'Seguir' }}</button>
                         </div>
@@ -176,8 +176,8 @@ onMounted(async () => {
                     </div>
                     <div v-if="tab == 'posts'">
                         <div class="px-8 py-3 flex gap-3 border-b border-[#5A6270]" v-for="post in posts" :key="post.id">
-                            <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer">
-                                <img :src="user.avatarUrl" alt="" class="w-full min-w-12">
+                            <RouterLink class="min-w-12 h-12 rounded-full hover:cursor-pointer overflow-hidden">
+                                <img :src="user.avatarUrl" alt="" class="w-12 rounded-full">
                             </RouterLink>
                             <div class="flex flex-col gap-2">
                                 <div class="flex items-center gap-2">
@@ -215,8 +215,8 @@ onMounted(async () => {
                     </div>
                     <div v-else-if="tab == 'replies'">
                         <div class="px-8 py-3 flex gap-3 border-b border-[#5A6270]" v-for="post in allPosts" :key="post.id">
-                            <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer">
-                                <img :src="user.avatarUrl" alt="" class="w-full">
+                            <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer overflow-hidden flex items-center justify-center">
+                                <img :src="user.avatarUrl" alt="" class="w-full rounded-full object-fit">
                             </RouterLink>
                             <div class="flex flex-col gap-2">
                                 <div class="flex items-center gap-2">

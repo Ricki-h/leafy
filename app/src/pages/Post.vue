@@ -135,8 +135,8 @@ onBeforeUnmount(() => {
                 </RouterLink>
                 <div class="px-8 py-6 flex flex-col gap-3 border-b border-[#5A6270] w-full">
                     <div class="flex gap-3">
-                        <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer">
-                            <img :src="post.user.avatarUrl" alt="" class="w-full rounded-full">
+                        <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer overflow-hidden">
+                            <img :src="post.user.avatarUrl" alt="" class="w-12 rounded-full">
                         </RouterLink>
                         <div>
                             <p class="text-[#CCD6E5] font-semibold">{{ post.user.name }}</p>
@@ -177,7 +177,10 @@ onBeforeUnmount(() => {
             <div class="px-8 py-4 border-b border-[#5A6270] flex flex-col gap-4">
                 <p class="text-[#5A6270]">Responder a <span class="text-[#2BA69C]">{{ '@' + post.user.username }}</span></p>
                 <div class="flex gap-4">
-                    <img :src="me.avatarUrl" alt="" class="w-12 h-12 rounded-full">
+                    <div class="min-w-12 h-12 overflow-hidden">
+                        <img :src="me.avatarUrl" alt="" class="w-12 h-12 rounded-full">
+
+                    </div>
                     <textarea
                     ref="textarea"
                     v-model="content"
@@ -195,8 +198,8 @@ onBeforeUnmount(() => {
             <div>
                 <div v-for="replie in post.replies" :key="replie.id" class="px-8 py-6 flex gap-3 border-b border-[#5A6270] w-full">
                     <div class="flex gap-3">
-                        <RouterLink class="w-12 h-12 rounded-full hover:cursor-pointer">
-                            <img :src="replie.user.avatarUrl" alt="" class="w-full rounded-full">
+                        <RouterLink class="min-w-12 h-12 rounded-full hover:cursor-pointer overflow-hidden">
+                            <img :src="replie.user.avatarUrl" alt="" class="w-12 rounded-full">
                         </RouterLink>
                     </div>
                     <div class="flex flex-col gap-2">
