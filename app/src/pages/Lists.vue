@@ -3,7 +3,7 @@
           <div class="w-full h-full overflow-y-auto bg-[#151823] px-6 py-6">
             <!-- Title -->
             <h1 class="text-center text-2xl font-bold text-white mb-4">
-            Listas de <span class="text-teal-400">usuário</span>
+            Listas de <span class="text-teal-400">{{ userName || 'usuário' }}</span>
             </h1>
 
             <!-- Divider -->
@@ -71,7 +71,9 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import Template from './base/Template.vue'
+import api from '../services/api.js'
 
 // Ajuste a URL base conforme seu .env (ex: VITE_API_URL=http://localhost:3000)
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
@@ -89,7 +91,10 @@ const props = defineProps({
   },
 })
 
+const route = useRoute()
+
 const lists = ref([])
+const userName = ref('')
 const loading = ref(true)
 const error = ref(null)
 const currentPage = ref(1)
@@ -108,6 +113,7 @@ function firstCover(list) {
   return list.items?.[0]?.book?.coverUrl || null
 }
 
+// ---------- Listas (código original, sem alterações) ----------
 async function fetchLists() {
   loading.value = true
   error.value = null
@@ -138,6 +144,32 @@ async function fetchLists() {
   }
 }
 
-onMounted(fetchLists)
+// ---------- Nome do usuário (independente das listas) ----------
+async function fetchUserName() {
+  userName.value = ''
+
+  try {
+    const username = route.params.username
+
+    if (username) {
+      // Mesma rota que a página de perfil usa
+      const { data } = await api.get(`/users/${username}`)
+      userName.value = data.name || ''
+    } else {
+      // Sem username na rota: usuário logado
+      const logged = JSON.parse(localStorage.getItem('user') || 'null')
+      userName.value = logged?.name || ''
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+onMounted(() => {
+  fetchLists()
+  fetchUserName()
+})
+
 watch(() => props.userId, fetchLists)
+watch(() => route.params.username, fetchUserName)
 </script>
