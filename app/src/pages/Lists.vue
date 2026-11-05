@@ -19,8 +19,8 @@
               {{ error }}
             </div>
 
-            <!-- Vazio -->
-            <div v-else-if="lists.length === 0" class="text-center text-white/70 py-10">
+            <!-- Vazio (só para quem não pode criar listas) -->
+            <div v-else-if="lists.length === 0 && !isOwner" class="text-center text-white/70 py-10">
               Nenhuma lista encontrada.
             </div>
 
@@ -51,6 +51,21 @@
                 {{ list.name }}
                 </span>
             </router-link>
+
+            <!-- Botão: criar nova lista -->
+            <button
+                v-if="isOwner && currentPage === totalPages"
+                type="button"
+                class="flex flex-col items-center cursor-pointer group"
+                aria-label="Criar nova lista"
+                @click="showCreateModal = true"
+            >
+                <div class="w-full aspect-[3/4] rounded-sm border-2 border-dashed border-white/30 flex items-center justify-center group-hover:border-teal-400 group-hover:bg-white/5 transition-colors">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" class="text-white/60 group-hover:text-teal-400 transition-colors">
+                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </button>
             </div>
 
             <!-- Pagination -->
@@ -67,12 +82,19 @@
             </div>
         </div>
     </Template>
+
+    <ModalCriarLista
+        v-if="showCreateModal"
+        @close="showCreateModal = false"
+        @criada="handleListaCriada"
+    />
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Template from './base/Template.vue'
+import ModalCriarLista from '../components/ModalCriarLista.vue'
 import api from '../services/api.js'
 
 // Ajuste a URL base conforme seu .env (ex: VITE_API_URL=http://localhost:3000)
@@ -98,6 +120,7 @@ const userName = ref('')
 const loading = ref(true)
 const error = ref(null)
 const currentPage = ref(1)
+const showCreateModal = ref(false)
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(lists.value.length / props.itemsPerPage))
@@ -106,6 +129,15 @@ const totalPages = computed(() =>
 const paginatedLists = computed(() => {
   const start = (currentPage.value - 1) * props.itemsPerPage
   return lists.value.slice(start, start + props.itemsPerPage)
+})
+
+// Só mostra o botão "+" quando a página é do usuário logado
+const isOwner = computed(() => {
+  const logged = JSON.parse(localStorage.getItem('user') || 'null')
+  if (!logged) return false
+
+  const username = route.params.username
+  return !username || logged.username === username
 })
 
 // Pega a capa do primeiro livro da lista, se houver itens
@@ -163,6 +195,14 @@ async function fetchUserName() {
   } catch (err) {
     console.error(err)
   }
+}
+
+// Lista criada no modal: entra no grid e a página pula para onde ela está
+function handleListaCriada(newList) {
+  newList.items = newList.items || []
+  lists.value = [...lists.value, newList]
+  currentPage.value = totalPages.value
+  showCreateModal.value = false
 }
 
 onMounted(() => {
