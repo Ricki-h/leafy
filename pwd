@@ -1,0 +1,76 @@
+[33m3b82dcd[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mposts[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mleafy[m[33m)[m ajeitando as fotos de perfil
+[33ma898e21[m finalizando avaliações
+[33maccd586[m merging eu acho
+[33ma833fd7[m Merge branch 'hugo' into 'main'
+[33m840e87e[m finalizando parte dos posts
+[33md60c985[m[33m ([m[1;31morigin/hugo[m[33m)[m atualizando listas
+[33mff6255f[m fazendo as replies
+[33m1a551a8[m Merge branch 'hugo' of https://gitlab.com/Hugo505/leafy into hugo
+[33m490def8[m Colocando editar perfil
+[33md884113[m ajeitando o merge da branch hugo
+[33mcf957ce[m Merge branch 'hugo' into 'main'
+[33m76fbf91[m Merge branch 'main' into 'hugo'
+[33m5577db1[m continuando o desenvolvimento dos posts
+[33mba147f7[m Colocando um bocado de coisa ai
+[33mc2fa9bb[m continuando desenvolvimento das funções relacionadas aos posts
+[33m3a2000f[m começando post
+[33m579dac3[m Terminei por hoje por motivos de sono
+[33mb70a629[m retirando verificação de email
+[33m172b2f9[m Merge branch 'books' into 'main'
+[33m34615e4[m[33m ([m[1;31morigin/books[m[33m)[m adicionando pagina de livro
+[33m06594eb[m Edit MenuLeft.vue
+[33m74313b5[m Merge branch 'books' into 'main'
+[33md82cf43[m fazendo pesquisa de livros - caso de uso de maior risco
+[33mc477240[m Começando o caso de maior risco
+[33mc74b8ff[m ajustando html da pagina user
+[33mba5ff2e[m finalizando listas
+[33m6f63763[m quase finalizando perfil
+[33md1ceb55[m Merge branch '404' into 'main'
+[33m2340516[m[33m ([m[1;31morigin/404[m[33m)[m Merge branch 'main' into '404'
+[33md41a903[m Merge branch 'home' into 'main'
+[33m5625e5e[m Delete .gitignore
+[33m1ae0e20[m finalizando login e cadastro e começando perfis
+[33m19da584[m Páginas 404 e notificações
+[33mfe1da32[m finalizando home
+[33m89218d0[m adicionando fontes
+[33m5759daa[m finalizando template basico
+[33mc9e162c[m fazendo menu lateral aside
+[33m9906066[m Edit README.md
+[33m762bdb3[m Update file README.md
+[33m434501a[m Update file README.md
+[33m0007ac6[m Update file README.md
+[33md9b1762[m Update file README.md
+[33m296bbb9[m Update file README.md
+[33m5c82dd7[m Update file README.md
+[33mc988c36[m Update file README.md
+[33ma132963[m Update file README.md
+[33me7f0fb2[m Update file README.md
+[33m3425a09[m Update file README.md
+[33m767529e[m atualizando o README de novo
+[33mc009926[m atualizando o README
+[33m8a4964b[m Update file README.md
+[33m102491e[m Update file README.md
+[33m1a14863[m Update file README.md
+[33m87e89c1[m Update file README.md
+[33m754b210[m Update file README.md
+[33m58019a7[m Update file README.md
+[33m5d96e21[m Update file README.md
+[33m1eb9b3b[m Update file README.md
+[33mf21a312[m Update file README.md
+[33m003fdf7[m Update file README.md
+[33mb058aad[m Update file README.md
+[33m1d0d1b3[m Update file README.md
+[33m14d2f5c[m Update file README.md
+[33m6e7a57d[m Update file README.md
+[33m5409726[m Update file README.md
+[33m893dec0[m Update file README.md
+[33mda0a98c[m Update file README.md
+[33mc8c23cb[m Update file README.md
+[33m213a4fe[m Update file README.md
+[33me5a32c4[m Adicionando licença
+[33m17c10b8[m fazendo verificação de email simples
+[33m2f864b0[m finalizando login incial
+[33m6d6d0ef[m Colocando login semi feito
+[33md60b183[m ajeitando modelo do front end
+[33m3e0aefd[m Colocando vue js inicial
+[33m1880812[m Initial commit
