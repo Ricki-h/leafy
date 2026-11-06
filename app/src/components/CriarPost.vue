@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ModalBase from './ModalBase.vue'
 import api from '../services/api.js'
 
@@ -13,30 +13,28 @@ const props = defineProps({
 const emit = defineEmits(['close', 'postada'])
 
 // Valor máximo das notas (ajuste: 5, 10, 100...)
-const NOTA_MAX = 10
+const NOTA_MAX = 5
 const TEXTO_MAX = 2000
 
 const campos = ref([
-  { chave: 'escrita', label: 'Escrita', valor: '' },
-  { chave: 'narrativa', label: 'Narrativa/história', valor: '' },
-  { chave: 'personagens', label: 'Personagens', valor: '' },
-  { chave: 'ritmo', label: 'Ritmo', valor: '' },
-  { chave: 'impacto', label: 'Impacto emocional', valor: '' },
+  { chave: 'writing', label: 'Escrita', valor: '' },
+  { chave: 'plot', label: 'Narrativa/história', valor: '' },
+  { chave: 'characters', label: 'Personagens', valor: '' },
+  { chave: 'pacing', label: 'Ritmo', valor: '' },
+  { chave: 'emotionalImpact', label: 'Impacto emocional', valor: '' },
 ])
 
-const nota = ref({ chave: 'nota', label: 'Nota geral', valor: '' })
-const construcao = ref({ chave: 'construcao', label: 'Construção de mundo', valor: '' })
+const construcao = ref({ chave: 'worldbuilding', label: 'Construção de mundo', valor: '' })
 const construcaoAtiva = ref(false)
-const texto = ref('')
+const body = ref('')
 const erro = ref('')
 const enviando = ref(false)
 
 // Mantém só dígitos e no máximo uma casa decimal, limitado a NOTA_MAX
 function sanitizar(valor) {
-  let v = String(valor).replace(',', '.').replace(/[^0-9.]/g, '')
-  const [inteiro, ...resto] = v.split('.')
-  v = resto.length ? `${inteiro}.${resto.join('').slice(0, 1)}` : inteiro
+  let v = String(valor).replace(/[^0-9]/g, '').slice(0, 1)
   if (v !== '' && Number(v) > NOTA_MAX) v = String(NOTA_MAX)
+  if (v === '0') v = ''
   return v
 }
 
@@ -49,14 +47,24 @@ function numeroValido(v) {
   return v !== '' && !isNaN(Number(v))
 }
 
+// Prévia da nota geral (o valor oficial é calculado no servidor)
+const media = computed(() => {
+  const valores = campos.value.map(c => c.valor)
+  if (construcaoAtiva.value) valores.push(construcao.value.valor)
+
+  if (valores.some(v => !numeroValido(v))) return null
+
+  const soma = valores.reduce((s, v) => s + Number(v), 0)
+  return ((soma / valores.length) * 2).toFixed(1)
+})
+
 function alternarConstrucao() {
   construcaoAtiva.value = !construcaoAtiva.value
   if (!construcaoAtiva.value) construcao.value.valor = ''
 }
 
 async function postar() {
-  const notasOk =
-    campos.value.every(c => numeroValido(c.valor)) && numeroValido(nota.value.valor)
+  const notasOk = campos.value.every(c => numeroValido(c.valor))
 
   if (!notasOk) {
     erro.value = 'Preencha todas as notas com números.'
@@ -68,7 +76,7 @@ async function postar() {
     return
   }
 
-  if (texto.value.trim() === '') {
+  if (body.value.trim() === '') {
     erro.value = 'Escreva sua resenha.'
     return
   }
@@ -76,11 +84,10 @@ async function postar() {
   erro.value = ''
 
   const dados = Object.fromEntries(campos.value.map(c => [c.chave, Number(c.valor)]))
-  dados.nota = Number(nota.value.valor)
   if (construcaoAtiva.value) {
-    dados.construcao = Number(construcao.value.valor)
+    dados.worldbuilding = Number(construcao.value.valor)
   }
-  dados.texto = texto.value.trim()
+  dados.body = body.value.trim()
 
   enviando.value = true
   try {
@@ -176,36 +183,25 @@ function close() {
         />
       </div>
 
-      <!-- Nota geral -->
+      <!-- Nota geral (calculada automaticamente) -->
       <div class="flex items-center gap-2 text-[15px] text-gray-400">
-        <label for="nota" class="shrink-0 text-gray-400">
-          {{ nota.label }}:
-        </label>
-
-        <input
-          id="nota"
-          :value="nota.valor"
-          type="text"
-          inputmode="decimal"
-          autocomplete="off"
-          :placeholder="`0 a ${NOTA_MAX}`"
-          class="flex-1 bg-transparent text-gray-100 placeholder-gray-600 outline-none border-b border-transparent focus:border-teal-400/40 transition"
-          @input="onNumeroInput(nota, $event)"
-        />
+        <span class="shrink-0">Nota geral:</span>
+        <span class="font-bold text-teal-400">{{ media ?? '—' }}</span>
+        <span class="text-xs text-gray-500">(média das notas acima)</span>
       </div>
 
       <!-- Texto da resenha -->
       <div class="pt-2">
-        <label for="texto" class="block text-[15px] text-gray-400 mb-2">Resenha:</label>
+        <label for="body" class="block text-[15px] text-gray-400 mb-2">Resenha:</label>
         <textarea
-          id="texto"
-          v-model="texto"
+          id="body"
+          v-model="body"
           rows="5"
           :maxlength="TEXTO_MAX"
           placeholder="Escreva aqui o que você achou do livro..."
           class="w-full resize-none rounded-lg bg-white/5 p-3 text-[15px] text-gray-100 placeholder-gray-500 outline-none border border-transparent focus:border-teal-400/40 transition"
         ></textarea>
-        <p class="mt-1 text-right text-xs text-gray-500">{{ texto.length }}/{{ TEXTO_MAX }}</p>
+        <p class="mt-1 text-right text-xs text-gray-500">{{ body.length }}/{{ TEXTO_MAX }}</p>
       </div>
     </div>
 

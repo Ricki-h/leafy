@@ -81,13 +81,13 @@
             </button>
             </div>
         </div>
-    </Template>
 
-    <ModalCriarLista
-        v-if="showCreateModal"
-        @close="showCreateModal = false"
-        @criada="handleListaCriada"
-    />
+        <ModalCriarLista
+            v-if="showCreateModal"
+            @close="showCreateModal = false"
+            @criada="handleListaCriada"
+        />
+    </Template>
 </template>
 
 <script setup>
@@ -97,16 +97,7 @@ import Template from './base/Template.vue'
 import ModalCriarLista from '../components/ModalCriarLista.vue'
 import api from '../services/api.js'
 
-// Ajuste a URL base conforme seu .env (ex: VITE_API_URL=http://localhost:3000)
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-
 const props = defineProps({
-  // Se userId for passado, busca as listas PÚBLICAS desse usuário (rota getLists).
-  // Se não for passado, busca as listas do usuário LOGADO (rota getMyLists).
-  userId: {
-    type: [String, Number],
-    default: null,
-  },
   itemsPerPage: {
     type: Number,
     default: 8, // 2 colunas x 4 linhas, casa com o grid mobile
@@ -131,9 +122,17 @@ const paginatedLists = computed(() => {
   return lists.value.slice(start, start + props.itemsPerPage)
 })
 
-// Só mostra o botão "+" quando a página é do usuário logado
+function getLoggedUser() {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null')
+  } catch {
+    return null
+  }
+}
+
+// A página é do usuário logado quando não há username na rota ou ele é o mesmo
 const isOwner = computed(() => {
-  const logged = JSON.parse(localStorage.getItem('user') || 'null')
+  const logged = getLoggedUser()
   if (!logged) return false
 
   const username = route.params.username
@@ -145,55 +144,38 @@ function firstCover(list) {
   return list.items?.[0]?.book?.coverUrl || null
 }
 
-// ---------- Listas (código original, sem alterações) ----------
-async function fetchLists() {
+async function load() {
   loading.value = true
   error.value = null
 
   try {
-    // Rota pública (getLists) x rota do próprio usuário (getMyLists)
-    const endpoint = props.userId
-      ? `${API_URL}/lists/${props.userId}`
-      : `${API_URL}/lists/me`
-
-    const token = localStorage.getItem('token')
-
-    const res = await fetch(endpoint, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
-
-    if (!res.ok) {
-      throw new Error('Não foi possível carregar as listas.')
-    }
-
-    const data = await res.json()
-    lists.value = data
-    currentPage.value = 1
-  } catch (err) {
-    error.value = err.message || 'Erro ao buscar listas.'
-  } finally {
-    loading.value = false
-  }
-}
-
-// ---------- Nome do usuário (independente das listas) ----------
-async function fetchUserName() {
-  userName.value = ''
-
-  try {
     const username = route.params.username
+    const logged = getLoggedUser()
+
+    let endpoint = '/lists/me'
 
     if (username) {
       // Mesma rota que a página de perfil usa
-      const { data } = await api.get(`/users/${username}`)
-      userName.value = data.name || ''
+      const { data: user } = await api.get(`/users/${username}`)
+      userName.value = user.name || ''
+
+      // Listas do próprio usuário usam /lists/me; as de outros, a rota pública
+      if (logged?.username !== username) {
+        // AJUSTE AQUI se a rota pública do seu listRoutes for outra
+        endpoint = `/lists/user/${user.id}`
+      }
     } else {
-      // Sem username na rota: usuário logado
-      const logged = JSON.parse(localStorage.getItem('user') || 'null')
       userName.value = logged?.name || ''
     }
+
+    const { data } = await api.get(endpoint)
+    lists.value = data
+    currentPage.value = 1
   } catch (err) {
     console.error(err)
+    error.value = err.response?.data?.error || 'Não foi possível carregar as listas.'
+  } finally {
+    loading.value = false
   }
 }
 
@@ -205,11 +187,6 @@ function handleListaCriada(newList) {
   showCreateModal.value = false
 }
 
-onMounted(() => {
-  fetchLists()
-  fetchUserName()
-})
-
-watch(() => props.userId, fetchLists)
-watch(() => route.params.username, fetchUserName)
+onMounted(load)
+watch(() => route.params.username, load)
 </script>

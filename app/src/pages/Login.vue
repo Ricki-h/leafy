@@ -3,15 +3,21 @@ import { ref } from 'vue'
 import api from '../services/api.js'
 import { RouterLink, useRouter } from 'vue-router'
 import Template from './base/Template.vue'
+import Input from '../components/Input.vue'     // ajuste o caminho/nome
+import Loading from '../components/Loading.vue' // ajuste o caminho
 
 const router = useRouter()
 
 const login = ref('')
 const password = ref('')
 const error = ref('')
+const loading = ref(false)
 
 const handleLogin = async () => {
+  if (loading.value) return
+
   try {
+    loading.value = true
     error.value = ''
 
     const res = await api.post('/auth/login', {
@@ -24,12 +30,15 @@ const handleLogin = async () => {
     router.push('/')
   } catch (err) {
     error.value = err.response?.data?.error || 'Erro ao fazer login.'
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
 <template>
   <Template variant="none" class="items-center">
+
     <div class="w-full max-w-148 flex flex-col gap-8">
 
       <div class="font-qurova max-w-98">
@@ -39,38 +48,40 @@ const handleLogin = async () => {
 
       <form @submit.prevent="handleLogin" class="flex flex-col gap-6">
 
-        <div>
-          <label class="block text-sm font-medium text-[#86909F] mb-2">E-mail ou Nome de usuário</label>
-          <input
-            v-model="login"
-            type="text"
-            placeholder="email ou username"
-            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
-            required
-          >
-        </div>
+        <Input
+          v-model="login"
+          variant="floating"
+          name="login"
+          type="text"
+          label="E-mail ou Nome de usuário"
+          placeholder="email ou username"
+          autocomplete="username"
+          :disabled="loading"
+          required
+        />
 
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <label class="block text-sm font-medium text-[#86909F]">Senha</label>
-          </div>
-          <input
-            v-model="password"
-            type="password"
-            placeholder="******"
-            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
-            required
-          >
-        </div>
+        <Input
+          v-model="password"
+          variant="floating"
+          name="password"
+          type="password"
+          label="Senha"
+          placeholder="******"
+          autocomplete="current-password"
+          :disabled="loading"
+          required
+        />
 
-        <p v-if="error" class="text-red-500 text-sm mb-4">{{ error }}</p>
+        <p v-if="error" class="text-red-500 text-sm">{{ error }}</p>
 
         <div class="flex gap-3">
           <button
             type="submit"
-            class="w-full text-xl bg-[#CCD6E5] text-[#0E121A] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer"
+            :disabled="loading"
+            class="w-full text-xl bg-[#CCD6E5] flex items-center justify-center gap-3 text-[#0E121A] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
           >
-            Entrar
+            <Loading v-if="loading" />
+            {{ loading ? 'Entrando...' : 'Entrar' }}
           </button>
           <RouterLink to="/register"
             class="text-center w-full text-xl border-1 border-[#FF82BD] text-[#FF82BD] font-bold py-2 px-4 rounded-full hover:bg-[#FF82BD] hover:text-[#0E121A] hover:cursor-pointer"
@@ -79,9 +90,8 @@ const handleLogin = async () => {
           </RouterLink>
         </div>
 
-
       </form>
 
-      </div>
+    </div>
   </Template>
 </template>

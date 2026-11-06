@@ -51,7 +51,7 @@ onMounted(async () => {
 
 <template>
     <Template variant="left">
-        <div class="flex flex-col h-full border-r border-[#5A6270]">
+        <div class="flex flex-col h-full border-r border-[#5A6270] overflow-y-auto">
             <div class="py-4 border-b border-[#5A6270] px-8">
                 <button @click="voltar" class="flex items-center gap-2 hover:cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="9" height="16" viewBox="0 0 12 19" fill="none">

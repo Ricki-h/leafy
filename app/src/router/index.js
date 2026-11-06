@@ -27,9 +27,9 @@ const routes = [
   { path: '/books', component: SearchBooks, meta: { requiresAuth: true } },
   { path: '/books/:id', component: Book, meta: { requiresAuth: true } },
   { path: '/post/:id', component: Post, meta: { requiresAuth: true } },
-     { path: '/users/:username/followers', component: () => import('../pages/Followers.vue') },
-   { path: '/users/:username/following', component: () => import('../pages/Followers.vue') },
-  { path: '/users/:username/reviews', component: () => import('../pages/Resenhas.vue') },
+     { path: '/users/:username/followers', component: () => import('../pages/Followers.vue'), meta: { requiresAuth: true } },
+   { path: '/users/:username/following', component: () => import('../pages/Followers.vue'), meta: { requiresAuth: true } },
+  { path: '/users/:username/reviews', component: () => import('../pages/Resenhas.vue'), meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
@@ -37,13 +37,16 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
+router.beforeEach((to) => {
+  const user = localStorage.getItem('user')
 
-  if (to.meta.requiresAuth && !token) {
-    next('/login')
-  } else {
-    next()
+  if (to.meta.requiresAuth && !user) {
+    return '/login'
+  }
+
+  // Quem já está logado não precisa ver login/registro
+  if (user && (to.path === '/login' || to.path === '/register')) {
+    return '/'
   }
 })
 

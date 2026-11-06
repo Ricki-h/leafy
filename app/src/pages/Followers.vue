@@ -1,10 +1,11 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import Template from './base/Template.vue'
 import api from '../services/api.js'
 
 const route = useRoute()
+const router = useRouter()
 
 const username = computed(() => route.params.username)
 const mode = computed(() => (route.path.endsWith('/following') ? 'following' : 'followers'))
@@ -35,7 +36,7 @@ async function loadUsers({ silent = false } = {}) {
 
     try {
         const { data } = await api.get(`/users/${username.value}/${mode.value}`)
-        users.value = data
+        users.value = Array.isArray(data) ? data : (data?.users ?? [])
     } catch (err) {
         console.error(err)
         error.value = err.response?.data?.error || 'Não foi possível carregar a lista.'
@@ -54,7 +55,7 @@ async function follow(u) {
 }
 
 function voltar() {
-    window.history.back()
+    router.push(`/users/${route.params.username}`)
 }
 
 onMounted(() => {

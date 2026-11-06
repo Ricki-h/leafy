@@ -8,7 +8,7 @@ const resultados = ref([])
 const carregando = ref(false)
 
 function handleResults(data) {
-    resultados.value = data
+    resultados.value = Array.isArray(data) ? data : (data?.books ?? [])
 }
 
 function descricaoFormatada(descricao, max) {

@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import api from '../services/api.js'
 import { RouterLink, useRouter } from 'vue-router'
 import Template from './base/Template.vue'
+import Input from '../components/Input.vue'     // ajuste o caminho/nome
+import Loading from '../components/Loading.vue' // ajuste o caminho
 
 const router = useRouter()
 
@@ -12,9 +14,13 @@ const email = ref('')
 const password = ref('')
 const birthDate = ref('')
 const error = ref('')
+const loading = ref(false)
 
 const handleRegister = async () => {
+  if (loading.value) return
+
   try {
+    loading.value = true
     error.value = ''
 
     const { data } = await api.post('/auth/register', {
@@ -31,12 +37,16 @@ const handleRegister = async () => {
     router.push('/')
   } catch (err) {
     error.value = err.response?.data?.error || 'Erro ao criar conta.'
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
 <template>
   <Template variant="none" class="items-center flex">
+    <Loading v-if="loading" />
+
     <div class="w-full max-w-148 flex flex-col gap-8">
 
       <div class="font-qurova">
@@ -50,69 +60,59 @@ const handleRegister = async () => {
 
       <form @submit.prevent="handleRegister" class="flex flex-col gap-6">
 
-        <div>
-          <label class="block text-sm font-medium text-[#86909F] mb-2">
-            Nome
-          </label>
-          <input
-            v-model="name"
-            type="text"
-            placeholder="Seu nome"
-            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
-            required
-          >
-        </div>
+        <Input
+          v-model="name"
+          name="name"
+          type="text"
+          label="Nome"
+          placeholder="Seu nome"
+          autocomplete="name"
+          :disabled="loading"
+          required
+        />
 
-        <div>
-          <label class="block text-sm font-medium text-[#86909F] mb-2">
-            Nome de usuário
-          </label>
-          <input
-            v-model="username"
-            type="text"
-            placeholder="@username"
-            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
-            required
-          >
-        </div>
+        <Input
+          v-model="username"
+          name="username"
+          type="text"
+          label="Nome de usuário"
+          placeholder="@username"
+          autocomplete="username"
+          :disabled="loading"
+          required
+        />
 
-        <div>
-          <label class="block text-sm font-medium text-[#86909F] mb-2">
-            E-mail
-          </label>
-          <input
-            v-model="email"
-            type="email"
-            placeholder="email@exemplo.com"
-            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
-            required
-          >
-        </div>
+        <Input
+          v-model="email"
+          name="email"
+          type="email"
+          label="E-mail"
+          placeholder="email@exemplo.com"
+          autocomplete="email"
+          :disabled="loading"
+          required
+        />
 
-        <div>
-          <label class="block text-sm font-medium text-[#86909F] mb-2">
-            Data de nascimento
-          </label>
-          <input
-            v-model="birthDate"
-            type="date"
-            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
-            required
-          >
-        </div>
+        <Input
+          v-model="birthDate"
+          name="birthDate"
+          type="date"
+          label="Data de nascimento"
+          autocomplete="bday"
+          :disabled="loading"
+          required
+        />
 
-        <div>
-          <label class="block text-sm font-medium text-[#86909F] mb-2">
-            Senha
-          </label>
-          <input
-            v-model="password"
-            type="password"
-            placeholder="******"
-            class="w-full px-4 py-2 border border-[#5A6270] rounded-lg focus:border-[#2BA69C]"
-            required
-          >
-        </div>
+        <Input
+          v-model="password"
+          name="password"
+          type="password"
+          label="Senha"
+          placeholder="******"
+          autocomplete="new-password"
+          :disabled="loading"
+          required
+        />
 
         <p v-if="error" class="text-red-500 text-sm">
           {{ error }}
@@ -121,9 +121,10 @@ const handleRegister = async () => {
         <div class="flex gap-3">
           <button
             type="submit"
-            class="w-full text-xl bg-[#33BC90] text-[#18202C] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer"
+            :disabled="loading"
+            class="w-full text-xl bg-[#33BC90] text-[#18202C] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
           >
-            Criar conta
+            {{ loading ? 'Criando...' : 'Criar conta' }}
           </button>
 
           <RouterLink
