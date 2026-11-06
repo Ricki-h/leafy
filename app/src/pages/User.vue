@@ -159,7 +159,7 @@ onMounted(async () => {
                         </div>
         
                         <div class="flex gap-4 mt-6 w-full pb-4">
-                            <RouterLink class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#682B9C] text-[#0E121A] hover:text-[#CCD6E5] font-bold rounded-full">Resenhas</RouterLink>
+                            <RouterLink :to="'/users/' + user.username + '/reviews'" class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#682B9C] text-[#0E121A] hover:text-[#CCD6E5] font-bold rounded-full">Resenhas</RouterLink>
                             <RouterLink :to="'/users/' + user.username + '/lists'" class="w-full text-center px-4 py-2 bg-[#CCD6E5] hover:bg-[#682B9C] text-[#0E121A] hover:text-[#CCD6E5] font-bold rounded-full">Listas</RouterLink>
                         </div>
                     </div>

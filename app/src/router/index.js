@@ -29,6 +29,7 @@ const routes = [
   { path: '/post/:id', component: Post, meta: { requiresAuth: true } },
      { path: '/users/:username/followers', component: () => import('../pages/Followers.vue') },
    { path: '/users/:username/following', component: () => import('../pages/Followers.vue') },
+  { path: '/users/:username/reviews', component: () => import('../pages/Resenhas.vue') },
 ]
 
 const router = createRouter({

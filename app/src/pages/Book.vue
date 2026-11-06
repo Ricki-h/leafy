@@ -42,18 +42,7 @@ async function loadRatings() {
 function voltar() {
     window.history.back()
 }
-function handlePostar(dados) {
-    
-    try {
-        api.post(`/resenhas/${book.id}`)
-        console.log('avaliação enviada:', dados)
-    }
-    
-    catch(err) {
-        console.error(err)
-    }
-    showModal.value = false
-}
+
 onMounted(async () => {
     await loadBook()
     await loadRatings()
@@ -148,9 +137,9 @@ onMounted(async () => {
             </div>
 
             <CriarPost
-                v-if="showModal"
+                v-if="showModal && book"
+                :book-id="book.id"
                 @close="showModal = false"
-                @postar="handlePostar"
             />
             <ModalEscolherLista
                 v-if="showListModal"
