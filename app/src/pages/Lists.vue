@@ -3,7 +3,7 @@
           <div class="w-full h-full overflow-y-auto bg-[#151823] px-6 py-6">
             <!-- Title -->
             <h1 class="text-center text-2xl font-bold text-white mb-4">
-            Listas de <span class="text-teal-400">usuário</span>
+            Listas de <span class="text-teal-400">{{ userName || 'usuário' }}</span>
             </h1>
 
             <!-- Divider -->
@@ -19,8 +19,8 @@
               {{ error }}
             </div>
 
-            <!-- Vazio -->
-            <div v-else-if="lists.length === 0" class="text-center text-white/70 py-10">
+            <!-- Vazio (só para quem não pode criar listas) -->
+            <div v-else-if="lists.length === 0 && !isOwner" class="text-center text-white/70 py-10">
               Nenhuma lista encontrada.
             </div>
 
@@ -51,6 +51,21 @@
                 {{ list.name }}
                 </span>
             </router-link>
+
+            <!-- Botão: criar nova lista -->
+            <button
+                v-if="isOwner && currentPage === totalPages"
+                type="button"
+                class="flex flex-col items-center cursor-pointer group"
+                aria-label="Criar nova lista"
+                @click="showCreateModal = true"
+            >
+                <div class="w-full aspect-[3/4] rounded-sm border-2 border-dashed border-white/30 flex items-center justify-center group-hover:border-teal-400 group-hover:bg-white/5 transition-colors">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" class="text-white/60 group-hover:text-teal-400 transition-colors">
+                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </button>
             </div>
 
             <!-- Pagination -->
@@ -66,33 +81,37 @@
             </button>
             </div>
         </div>
+
+        <ModalCriarLista
+            v-if="showCreateModal"
+            @close="showCreateModal = false"
+            @criada="handleListaCriada"
+        />
     </Template>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import Template from './base/Template.vue'
-
-// Ajuste a URL base conforme seu .env (ex: VITE_API_URL=http://localhost:3000)
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+import ModalCriarLista from '../components/ModalCriarLista.vue'
+import api from '../services/api.js'
 
 const props = defineProps({
-  // Se userId for passado, busca as listas PÚBLICAS desse usuário (rota getLists).
-  // Se não for passado, busca as listas do usuário LOGADO (rota getMyLists).
-  userId: {
-    type: [String, Number],
-    default: null,
-  },
   itemsPerPage: {
     type: Number,
     default: 8, // 2 colunas x 4 linhas, casa com o grid mobile
   },
 })
 
+const route = useRoute()
+
 const lists = ref([])
+const userName = ref('')
 const loading = ref(true)
 const error = ref(null)
 const currentPage = ref(1)
+const showCreateModal = ref(false)
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(lists.value.length / props.itemsPerPage))
@@ -103,41 +122,71 @@ const paginatedLists = computed(() => {
   return lists.value.slice(start, start + props.itemsPerPage)
 })
 
+function getLoggedUser() {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null')
+  } catch {
+    return null
+  }
+}
+
+// A página é do usuário logado quando não há username na rota ou ele é o mesmo
+const isOwner = computed(() => {
+  const logged = getLoggedUser()
+  if (!logged) return false
+
+  const username = route.params.username
+  return !username || logged.username === username
+})
+
 // Pega a capa do primeiro livro da lista, se houver itens
 function firstCover(list) {
   return list.items?.[0]?.book?.coverUrl || null
 }
 
-async function fetchLists() {
+async function load() {
   loading.value = true
   error.value = null
 
   try {
-    // Rota pública (getLists) x rota do próprio usuário (getMyLists)
-    const endpoint = props.userId
-      ? `${API_URL}/lists/${props.userId}`
-      : `${API_URL}/lists/me`
+    const username = route.params.username
+    const logged = getLoggedUser()
 
-    const token = localStorage.getItem('token')
+    let endpoint = '/lists/me'
 
-    const res = await fetch(endpoint, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
+    if (username) {
+      // Mesma rota que a página de perfil usa
+      const { data: user } = await api.get(`/users/${username}`)
+      userName.value = user.name || ''
 
-    if (!res.ok) {
-      throw new Error('Não foi possível carregar as listas.')
+      // Listas do próprio usuário usam /lists/me; as de outros, a rota pública
+      if (logged?.username !== username) {
+        // AJUSTE AQUI se a rota pública do seu listRoutes for outra
+        endpoint = `/lists/user/${user.id}`
+      }
+    } else {
+      userName.value = logged?.name || ''
     }
 
-    const data = await res.json()
+    const { data } = await api.get(endpoint)
     lists.value = data
     currentPage.value = 1
   } catch (err) {
-    error.value = err.message || 'Erro ao buscar listas.'
+    console.error(err)
+    error.value = err.response?.data?.error || 'Não foi possível carregar as listas.'
   } finally {
     loading.value = false
   }
 }
 
-onMounted(fetchLists)
-watch(() => props.userId, fetchLists)
+// Lista criada no modal: entra no grid e a página pula para onde ela está
+function handleListaCriada(newList) {
+  newList.items = newList.items || []
+  lists.value = [...lists.value, newList]
+  currentPage.value = totalPages.value
+  showCreateModal.value = false
+}
+
+onMounted(load)
+watch(() => route.params.username, load)
 </script>

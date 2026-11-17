@@ -3,22 +3,19 @@ import axios from 'axios'
 const apiUrl = import.meta.env.VITE_API_URL
 
 const api = axios.create({
-  baseURL: apiUrl
-})
-
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
+  baseURL: apiUrl,
+  withCredentials: true,
 })
 
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            localStorage.removeItem('token')
+        const status = error.response?.status
+        const url = error.config?.url || ''
+        const ehLogin = url.includes('/auth/login')
+
+        // 401 em qualquer rota (menos no próprio login) = sessão expirada
+        if (status === 401 && !ehLogin) {
             localStorage.removeItem('user')
             window.location.href = '/login'
         }

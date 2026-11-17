@@ -35,7 +35,7 @@ const props = defineProps({
     rows: { type: [String, Number], default: 4 }, // textarea, numero de paragrafos/altura inicial
 })
 
-const emit = defineEmits(['update: modelValue', 'focus', 'blur'])
+const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
 const inputRef = ref(null)
 const focused = ref(false)
@@ -66,7 +66,7 @@ const describedBy = computed(() => {
 })
 
 // label flutuante
-hasValue = computed(() => {
+const hasValue = computed(() => {
     if (isFile.value) return fileCount.value > 0
     const v = props.modelValue
     return v !== null && v !== undefined && String(v) !== ''
@@ -74,9 +74,9 @@ hasValue = computed(() => {
 
 // tipos que mostra, algo por padrão como o Date (dd/mm/aaaa)
 const alwaysFilled = ['date', 'time', 'datetime-local', 'month', 'week', 'file']
-const isFloated = computed(() => {
+const isFloated = computed(() =>
     focused.value || hasValue.value || alwaysFilled.includes(props.type)
-})
+)
 
 // Classes de tamanho
 const sizes = {

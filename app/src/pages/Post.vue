@@ -116,7 +116,7 @@ onBeforeUnmount(() => {
 
 <template>
     <Template>
-        <div v-if="loading == false" class="flex flex-col h-screen">
+        <div v-if="loading == false" class="flex flex-col h-screen overflow-y-auto">
             <div class="flex border-b border-[#5A6270] px-8 py-6">
                 <button @click="voltar" class="flex items-center gap-2 hover:cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="9" height="16" viewBox="0 0 12 19" fill="none">
@@ -135,7 +135,7 @@ onBeforeUnmount(() => {
                 </RouterLink>
                 <div class="px-8 py-6 flex flex-col gap-3 border-b border-[#5A6270] w-full">
                     <div class="flex gap-3">
-                        <RouterLink v-if="post" class="w-12 h-12 rounded-full hover:cursor-pointer overflow-hidden">
+                        <RouterLink v-if="post" class="w-12 h-12 rounded-full hover:cursor-pointer overflow-hidden" :to="'/users/' + post.user.username">
                             <img :src="post.user?.avatarUrl" alt="" class="w-12 rounded-full">
                         </RouterLink>
                         <div>

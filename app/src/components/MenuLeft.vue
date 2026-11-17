@@ -1,7 +1,10 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-import api from '../services/api';
-import { onMounted, ref, computed } from 'vue';
+import { RouterLink, useRouter } from 'vue-router'
+import api from '../services/api'
+import { onMounted, ref, computed } from 'vue'
+import Botao from './Button.vue' // ajuste o caminho/nome do seu componente de botão
+
+const router = useRouter()
 
 const content = ref('')
 
@@ -17,12 +20,12 @@ const me = ref(null)
 async function loadMe() {
     try {
         const user = JSON.parse(localStorage.getItem('user'))
-        
+
         const { data } = await api.get(`/users/${user.username}`)
-    
+
         me.value = data
     }
-    catch(err) {
+    catch (err) {
         console.error(err)
     }
 }
@@ -38,11 +41,41 @@ async function postar() {
         content.value = ''
         postando.value = false
     }
-    catch(err) {
+    catch (err) {
         console.error(err)
     }
     loadingPost.value = false
 }
+
+// ---------- menu do perfil + logout ----------
+const menuAberto = ref(false)
+const saindo = ref(false)
+
+async function logout() {
+    try {
+        saindo.value = true
+        await api.post('/auth/logout')
+    } catch (err) {
+        console.error(err)
+    } finally {
+        // limpa o front mesmo se a API falhar, senão o usuário fica preso
+        localStorage.removeItem('user')
+        localStorage.removeItem('token') // se você guarda o token com outra chave, ajuste
+        saindo.value = false
+        menuAberto.value = false
+        router.push('/login')
+    }
+}
+
+// ---------- links de navegação ----------
+const navItems = computed(() => [
+    { label: 'Home', to: '/' },
+    { label: 'Explorar', to: '/' },
+    { label: 'Notificações', to: '/' },
+    { label: 'Livros', to: '/books' },
+    { label: 'Listas', to: `/users/${me.value.username}/lists` },
+    { label: 'Profile', to: `/users/${me.value.username}` },
+])
 
 onMounted(async () => {
     await loadMe()
@@ -70,62 +103,63 @@ onMounted(async () => {
                     <path d="M20.7318 14.4374C20.5068 14.2359 20.2364 14.0746 19.9391 14.013C19.642 13.9513 19.3453 13.9925 19.1014 14.1352C18.8576 14.2779 18.6804 14.5139 18.596 14.7988C18.5115 15.0839 18.5297 15.3927 18.6055 15.6815C18.6055 15.6815 18.6055 15.6815 18.6055 15.6815C18.7068 16.0261 18.865 16.3473 19.0736 16.6342C19.0775 16.6396 19.0814 16.645 19.0854 16.6504C20.4421 18.5248 22.6583 19.8367 24.9001 20.2303C25.4013 20.3236 25.9015 20.3768 26.397 20.3992C28.3218 20.4899 30.1185 19.9644 31.7402 19.2823C31.7973 19.2584 31.8538 19.2345 31.9098 19.2106C32.7387 18.8504 33.463 18.376 34.2065 17.9349C34.6182 17.6882 35.0813 17.5204 35.5043 17.2871C35.5602 17.2561 35.6139 17.226 35.668 17.1952C35.9463 17.036 36.2147 16.8718 36.4898 16.7002C36.6007 16.6308 36.6749 16.5209 36.693 16.3909C36.7112 16.2611 36.672 16.1217 36.5868 16.0073C36.5016 15.893 36.3783 15.8142 36.2468 15.7921C36.1152 15.7699 35.9863 15.8062 35.8856 15.8893C35.8856 15.8893 35.8856 15.8893 35.8856 15.8893C35.6535 16.0796 35.4033 16.2698 35.1581 16.4605C35.1102 16.4977 35.0629 16.5347 35.0138 16.5731C34.6439 16.8631 34.3043 17.2037 33.8999 17.446C33.174 17.8779 32.3949 18.2434 31.6196 18.4939C31.5626 18.512 31.5053 18.5303 31.4475 18.5485C29.814 19.075 28.1132 19.4308 26.4968 19.1287C26.0812 19.0527 25.678 18.9274 25.2942 18.7612C23.5512 18.0038 22.3861 16.5271 21.3268 15.0731C21.3237 15.0688 21.3207 15.0646 21.3176 15.0604C21.1538 14.835 20.9599 14.6296 20.7318 14.4374Z" fill="#2BA69C"/>
                 </svg>
             </RouterLink>
+
             <div class="flex flex-col gap-3">
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
+                <RouterLink
+                    v-for="item in navItems"
+                    :key="item.label"
+                    :to="item.to"
+                    class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2"
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
                         <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
                     </svg>
-                    <span>Home</span>
-                </RouterLink>
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
-                        <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
-                    </svg>
-                    <span>Explorar</span>
-                </RouterLink>
-                <RouterLink to="/" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
-                        <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
-                    </svg>
-                    <span>Notificações</span>
-                </RouterLink>
-                <RouterLink to="/books" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
-                        <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
-                    </svg>
-                    <span>Livros</span>
-                </RouterLink>
-                <RouterLink :to="`/users/${me.username}/lists`" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
-                        <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
-                    </svg>
-                    <span>Listas</span>
-                </RouterLink>
-                <RouterLink :to="'/users/' + me.username" class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="20" viewBox="0 0 12 20" fill="none">
-                        <path d="M4.01878 10L10.618 16.5992C10.9282 16.9095 11.0833 17.3043 11.0833 17.7837C11.0833 18.2632 10.9282 18.658 10.618 18.9682C10.3078 19.2784 9.91296 19.4335 9.43353 19.4335C8.9541 19.4335 8.55927 19.2784 8.24905 18.9682L0.465355 11.1845C0.296144 11.0153 0.176569 10.832 0.106628 10.6346C0.0366879 10.4372 0.0011541 10.2256 2.60328e-05 10C-0.00110204 9.77442 0.0344318 9.5629 0.106628 9.36549C0.178825 9.16808 0.2984 8.98477 0.465355 8.81555L8.24905 1.03186C8.55927 0.721638 8.9541 0.566528 9.43353 0.566528C9.91296 0.566528 10.3078 0.721638 10.618 1.03186C10.9282 1.34208 11.0833 1.7369 11.0833 2.21633C11.0833 2.69576 10.9282 3.09059 10.618 3.40081L4.01878 10Z" fill="#CCD6E5"/>
-                    </svg>
-                    <span>Profile</span>
+                    <span>{{ item.label }}</span>
                 </RouterLink>
             </div>
+
             <button @click="postando = true" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
                 POSTAR
             </button>
         </div>
-        <button class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between">
-            <div class="flex gap-3 items-center">
-                <div class="w-12 h-12 rounded-full overflow-hidden">
-                    <img :src="me.avatarUrl" alt="" class="rounded-full">
-                </div>
-                <div class="flex flex-col items-start">
-                    <p class="text-[#CCD6E5] text-base font-semibold">{{ me.name }}</p>
-                    <p class="text-[#5A6270] text-sm">{{ '@' + me.username }}</p>
-                </div>
+
+        <!-- perfil + menu -->
+        <div class="relative w-full">
+            <!-- fecha ao clicar fora -->
+            <div v-if="menuAberto" class="fixed inset-0 z-10" @click="menuAberto = false"></div>
+
+            <!-- menu -->
+            <div
+                v-if="menuAberto"
+                class="absolute bottom-full left-0 mb-2 w-full z-20 flex flex-col gap-4 p-4 rounded-2xl bg-[#0E121A] border border-[#5A6270] shadow-lg"
+            >
+                <Botao to="/settings" color="green" variant="outline" size="lg" class="w-full" @click="menuAberto = false">
+                    Configurações
+                </Botao>
+                <Botao color="pink" variant="outline" size="lg" class="w-full" :disabled="saindo" @click="logout">
+                    {{ saindo ? 'Saindo...' : 'Sair da conta' }}
+                </Botao>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="4" viewBox="0 0 18 4" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 2C3.75 2.22981 3.70474 2.45738 3.61679 2.6697C3.52884 2.88202 3.39994 3.07493 3.23744 3.23744C3.07493 3.39994 2.88202 3.52884 2.6697 3.61679C2.45738 3.70473 2.22981 3.75 2 3.75C1.77019 3.75 1.54262 3.70473 1.3303 3.61679C1.11798 3.52884 0.925066 3.39994 0.762563 3.23744C0.600061 3.07493 0.471157 2.88202 0.383211 2.6697C0.295265 2.45738 0.25 2.22981 0.25 2C0.25 1.53587 0.434375 1.09075 0.762563 0.762563C1.09075 0.434374 1.53587 0.25 2 0.25C2.46413 0.25 2.90925 0.434374 3.23744 0.762563C3.56563 1.09075 3.75 1.53587 3.75 2ZM9 0.25C9.46413 0.25 9.90925 0.434374 10.2374 0.762563C10.5656 1.09075 10.75 1.53587 10.75 2C10.75 2.46413 10.5656 2.90925 10.2374 3.23744C9.90925 3.56563 9.46413 3.75 9 3.75C8.53587 3.75 8.09075 3.56563 7.76256 3.23744C7.43437 2.90925 7.25 2.46413 7.25 2C7.25 1.53587 7.43437 1.09075 7.76256 0.762563C8.09075 0.434374 8.53587 0.25 9 0.25ZM16 0.25C16.4641 0.25 16.9092 0.434374 17.2374 0.762563C17.5656 1.09075 17.75 1.53587 17.75 2C17.75 2.46413 17.5656 2.90925 17.2374 3.23744C16.9092 3.56563 16.4641 3.75 16 3.75C15.5359 3.75 15.0908 3.56563 14.7626 3.23744C14.4344 2.90925 14.25 2.46413 14.25 2C14.25 1.53587 14.4344 1.09075 14.7626 0.762563C15.0908 0.434374 15.5359 0.25 16 0.25Z" fill="#CCD6E5"/>
-            </svg>
-        </button>
+
+            <!-- botão do perfil -->
+            <button
+                @click="menuAberto = !menuAberto"
+                class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between"
+            >
+                <div class="flex gap-3 items-center">
+                    <div class="w-12 h-12 rounded-full overflow-hidden">
+                        <img :src="me.avatarUrl" alt="" class="rounded-full">
+                    </div>
+                    <div class="flex flex-col items-start">
+                        <p class="text-[#CCD6E5] text-base font-semibold">{{ me.name }}</p>
+                        <p class="text-[#5A6270] text-sm">{{ '@' + me.username }}</p>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="4" viewBox="0 0 18 4" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 2C3.75 2.22981 3.70474 2.45738 3.61679 2.6697C3.52884 2.88202 3.39994 3.07493 3.23744 3.23744C3.07493 3.39994 2.88202 3.52884 2.6697 3.61679C2.45738 3.70473 2.22981 3.75 2 3.75C1.77019 3.75 1.54262 3.70473 1.3303 3.61679C1.11798 3.52884 0.925066 3.39994 0.762563 3.23744C0.600061 3.07493 0.471157 2.88202 0.383211 2.6697C0.295265 2.45738 0.25 2.22981 0.25 2C0.25 1.53587 0.434375 1.09075 0.762563 0.762563C1.09075 0.434374 1.53587 0.25 2 0.25C2.46413 0.25 2.90925 0.434374 3.23744 0.762563C3.56563 1.09075 3.75 1.53587 3.75 2ZM9 0.25C9.46413 0.25 9.90925 0.434374 10.2374 0.762563C10.5656 1.09075 10.75 1.53587 10.75 2C10.75 2.46413 10.5656 2.90925 10.2374 3.23744C9.90925 3.56563 9.46413 3.75 9 3.75C8.53587 3.75 8.09075 3.56563 7.76256 3.23744C7.43437 2.90925 7.25 2.46413 7.25 2C7.25 1.53587 7.43437 1.09075 7.76256 0.762563C8.09075 0.434374 8.53587 0.25 9 0.25ZM16 0.25C16.4641 0.25 16.9092 0.434374 17.2374 0.762563C17.5656 1.09075 17.75 1.53587 17.75 2C17.75 2.46413 17.5656 2.90925 17.2374 3.23744C16.9092 3.56563 16.4641 3.75 16 3.75C15.5359 3.75 15.0908 3.56563 14.7626 3.23744C14.4344 2.90925 14.25 2.46413 14.25 2C14.25 1.53587 14.4344 1.09075 14.7626 0.762563C15.0908 0.434374 15.5359 0.25 16 0.25Z" fill="#CCD6E5"/>
+                </svg>
+            </button>
+        </div>
     </aside>
 
     <div v-if="postando == true" class="absolute flex w-full h-full bg-[#110B2A]/40 top-0 right-0 z-2 justify-center">
@@ -140,12 +174,12 @@ onMounted(async () => {
                     <img :src="me.avatarUrl" alt="" class="rounded-full w-12">
                 </div>
                 <textarea
-                name="content"
-                v-model="content"
-                placeholder="O que você está lendo hoje?"
-                rows="3"
-                maxlength="280"
-                class="resize-none field-sizing-content border-none focus:outline-none focus:ring-0 text-[#CCD6E5] text-lg placeholder-[#5A6270] w-full bg-transparent min-h-10"
+                    name="content"
+                    v-model="content"
+                    placeholder="O que você está lendo hoje?"
+                    rows="3"
+                    maxlength="280"
+                    class="resize-none field-sizing-content border-none focus:outline-none focus:ring-0 text-[#CCD6E5] text-lg placeholder-[#5A6270] w-full bg-transparent min-h-10"
                 ></textarea>
             </div>
 
@@ -153,7 +187,7 @@ onMounted(async () => {
                 <button @click="postar" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-3 py-2 text-center flex items-center hover:cursor-pointer w-30 text-[#0E121A] font-bold justify-center" :disabled="loadingPost">
                     {{ loadingPost ? 'Postando' : 'Postar' }}
                 </button>
-                
+
                 <span class="text-sm" :class="counterColor">{{ content.length }}
                     <span class="text-[#5A6270]"> / 280</span></span>
             </div>
