@@ -3,5 +3,9 @@
 </script>
 
 <template>
-  <RouterView />
+  <RouterView v-slot="{ Component }">
+      <KeepAlive include="PesquisarLivros">
+          <component :is="Component" />
+      </KeepAlive>
+  </RouterView>
 </template>

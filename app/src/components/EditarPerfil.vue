@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 import api from '../services/api.js'
 import BaseModal from './ModalBase.vue' // Ajuste o caminho do seu modal base
 import UserAvatar from './AvatarImagem.vue' // Ajuste o caminho do seu componente de avatar
@@ -22,6 +22,13 @@ const avatarFile = ref(null)
 const avatarPreview = ref(props.user.avatarUrl ?? null)
 const avatarInput = ref(null)
 const saving = ref(false)
+const errorMessage = ref('')
+
+function revokePreview() {
+  if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarPreview.value)
+  }
+}
 
 function close() {
   emit('close')
@@ -36,29 +43,28 @@ function onAvatarChange(event) {
   if (!file) return
 
   if (!file.type.startsWith('image/')) {
-    console.error('Arquivo selecionado não é uma imagem')
+    errorMessage.value = 'O arquivo selecionado não é uma imagem.'
     return
   }
 
+  errorMessage.value = ''
   avatarFile.value = file
 
-  if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
-    URL.revokeObjectURL(avatarPreview.value)
-  }
+  revokePreview()
   avatarPreview.value = URL.createObjectURL(file)
   event.target.value = ''
 }
 
 function removeAvatar() {
-  if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
-    URL.revokeObjectURL(avatarPreview.value)
-  }
+  revokePreview()
   avatarFile.value = null
   avatarPreview.value = props.user.avatarUrl ?? null
 }
 
 async function save() {
   saving.value = true
+  errorMessage.value = ''
+
   try {
     const { data: profileData } = await api.patch('/users/me', {
       name: form.value.name,
@@ -71,23 +77,30 @@ async function save() {
       const formData = new FormData()
       formData.append('avatar', avatarFile.value)
 
+      // não defina Content-Type manualmente: o navegador gera com o boundary
       const response = await api.patch('/users/me/avatar', formData)
       avatarData = response.data
     }
 
+    // o pai recarrega o perfil completo; aqui só avisamos que salvou
     emit('updated', { ...profileData, ...avatarData })
     emit('close')
   } catch (err) {
     console.error(err)
+    errorMessage.value =
+      err?.response?.data?.message || 'Não foi possível salvar. Tente novamente.'
   } finally {
     saving.value = false
   }
 }
+
+// libera a URL temporária da prévia ao fechar o modal
+onBeforeUnmount(revokePreview)
 </script>
 
 <template>
-  <BaseModal 
-    width-class="w-full max-w-md" 
+  <BaseModal
+    width-class="w-full max-w-md"
     panel-class="border border-[#2a3142] shadow-2xl"
     @close="close"
   >
@@ -124,10 +137,10 @@ async function save() {
       <!-- Seção do Avatar com o novo componente UserAvatar -->
       <div class="flex flex-col items-center justify-center">
         <div class="relative group cursor-pointer" @click="triggerAvatarInput">
-          <UserAvatar 
-            :src="avatarPreview" 
-            :name="form.name || user.name" 
-            size-class="w-30 h-30 border-2 border-[#2a3142]" 
+          <UserAvatar
+            :src="avatarPreview"
+            :name="form.name || user.name"
+            size-class="w-30 h-30 border-2 border-[#2a3142]"
           />
 
           <!-- Overlay para indicar edição ao passar o mouse -->
@@ -181,6 +194,11 @@ async function save() {
             class="w-full bg-[#171a2a] border border-[#2a3142] rounded-lg px-3 py-2 text-gray-300 placeholder-gray-500 text-sm leading-relaxed focus:outline-none focus:border-[#2BA69C] transition"
           ></textarea>
         </div>
+
+        <!-- Mensagem de erro -->
+        <p v-if="errorMessage" role="alert" class="text-sm text-red-400">
+          {{ errorMessage }}
+        </p>
       </div>
     </div>
   </BaseModal>

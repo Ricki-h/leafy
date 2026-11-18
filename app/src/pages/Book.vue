@@ -73,7 +73,7 @@ onMounted(async () => {
                             <p class="text-sm text-[#6E7684]">-</p>
                             <p class="text-sm text-[#6E7684]">{{ book.pageCount + ' pags' || '??? pags' }}</p>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 flex-wrap">
                             <div v-for="genre in book.genres" :key="genre.id" class="px-6 py-1 bg-[#682B9C] text-sm text-[#CCD6E5] rounded-full font-inter font-bold">
                                 {{ genre.name }}
                             </div>

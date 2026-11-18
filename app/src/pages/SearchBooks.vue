@@ -1,14 +1,29 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import SearchBar from '../components/SearchBar.vue';
 import Template from './base/Template.vue';
 import Loading from '../components/Loading.vue';
 
+defineOptions({
+    name: 'PesquisarLivros'
+})
+
 const resultados = ref([])
 const carregando = ref(false)
 
+const STORAGE_KEY = 'ultima_pesquisa_livros'
+
+onMounted(() => {
+    const salvos = sessionStorage.getItem(STORAGE_KEY)
+    if (salvos) {
+        resultados.value = JSON.parse(salvos)
+    }
+})
+
 function handleResults(data) {
-    resultados.value = Array.isArray(data) ? data : (data?.books ?? [])
+    const lista = Array.isArray(data) ? data : (data?.books ?? [])
+    resultados.value = lista
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
 }
 
 function descricaoFormatada(descricao, max) {
