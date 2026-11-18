@@ -116,7 +116,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Template>
+    <Template variant="left">
         <div class="flex flex-col h-full border-r border-[#5A6270]">
             <!-- Barra de pesquisa -->
             <div class="px-8 py-6 border-b border-[#5A6270]">
