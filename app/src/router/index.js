@@ -35,7 +35,25 @@ const routes = [
     component: () => import('../pages/Resenha.vue'),
     meta: { requiresAuth: true }
   },
-  { path: '/settings', component: () => import('../pages/Settings.vue'), meta: { requiresAuth: true } }
+  { path: '/settings', component: () => import('../pages/Settings.vue'), meta: { requiresAuth: true } },
+  { path: '/logs', component: () => import('../pages/Logs.vue'), beforeEnter: (to, from, next) => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'))
+        if (user && user.role === 'admin') return next()
+      } catch {}
+      return next('/')
+    } },
+  {
+    path: '/logs/:id',
+    component: () => import('../pages/LogDetail.vue'),
+    beforeEnter: (to, from, next) => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'))
+        if (user && user.role === 'admin') return next()
+      } catch {}
+      return next('/')
+    }
+  },
 ]
 
 const router = createRouter({

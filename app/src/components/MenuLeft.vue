@@ -2,7 +2,7 @@
 import { RouterLink, useRouter } from 'vue-router'
 import api from '../services/api'
 import { onMounted, ref, computed } from 'vue'
-import Botao from './Button.vue' // ajuste o caminho/nome do seu componente de botão
+import Botao from './Button.vue'
 
 const router = useRouter()
 
@@ -20,10 +20,10 @@ const me = ref(null)
 async function loadMe() {
     try {
         const user = JSON.parse(localStorage.getItem('user'))
+        if (!user?.username) return
 
         const { data } = await api.get(`/users/${user.username}`)
-
-        me.value = data
+        me.value = { ...user, ...data }
     }
     catch (err) {
         console.error(err)
@@ -58,9 +58,8 @@ async function logout() {
     } catch (err) {
         console.error(err)
     } finally {
-        // limpa o front mesmo se a API falhar, senão o usuário fica preso
         localStorage.removeItem('user')
-        localStorage.removeItem('token') // se você guarda o token com outra chave, ajuste
+        localStorage.removeItem('token')
         saindo.value = false
         menuAberto.value = false
         router.push('/login')
@@ -68,16 +67,25 @@ async function logout() {
 }
 
 // ---------- links de navegação ----------
-const navItems = computed(() => [
-    { label: 'Home', to: '/', icon: 'home' },
-    { label: 'Explorar', to: '/explorer', icon: 'search' },
-    { label: 'Livros', to: '/books', icon: 'books' },
-    { label: 'Listas', to: `/users/${me.value.username}/lists`, icon: 'lists' },
-    { label: 'Profile', to: `/users/${me.value.username}`, icon: 'profile' },
-])
+const navItems = computed(() => {
+    const items = [
+        { label: 'Home', to: '/', icon: 'home' },
+        { label: 'Explorar', to: '/explorer', icon: 'search' },
+        { label: 'Livros', to: '/books', icon: 'books' },
+        { label: 'Listas', to: `/users/${me.value.username}/lists`, icon: 'lists' },
+        { label: 'Profile', to: `/users/${me.value.username}`, icon: 'profile' },
+    ]
+
+    if (me.value?.role === 'admin') {
+        items.push({ label: 'Logs', to: '/logs', icon: 'logs' })
+    }
+
+    return items
+})
 
 onMounted(async () => {
     await loadMe()
+    console.log(me.value.role)
 })
 </script>
 
@@ -104,36 +112,40 @@ onMounted(async () => {
             </RouterLink>
 
             <div class="flex flex-col gap-6">
-    <RouterLink
-        v-for="item in navItems"
-        :key="item.label"
-        :to="item.to"
-        class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-3"
-    >
-        <span class="w-7 h-5 flex items-center justify-center shrink-0">
-            <svg v-if="item.icon === 'home'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 12" fill="none">
-                <path d="M11.8902 5.63805L6.37366 0.125547C6.33394 0.0857489 6.28676 0.0541748 6.23482 0.0326318C6.18289 0.0110888 6.12721 0 6.07098 0C6.01475 0 5.95908 0.0110888 5.90714 0.0326318C5.8552 0.0541748 5.80802 0.0857489 5.7683 0.125547L0.251786 5.63805C0.0910714 5.79876 0 6.01707 0 6.24474C0 6.71751 0.384375 7.10189 0.857143 7.10189H1.43839V11.0354C1.43839 11.2724 1.62991 11.4639 1.86696 11.4639H5.21384V8.46394H6.71384V11.4639H10.275C10.5121 11.4639 10.7036 11.2724 10.7036 11.0354V7.10189H11.2848C11.5125 7.10189 11.7308 7.01215 11.8915 6.8501C12.225 6.51528 12.225 5.97287 11.8902 5.63805Z" fill="#CCD6E5"/>
-            </svg>
+                <RouterLink
+                    v-for="item in navItems"
+                    :key="item.label"
+                    :to="item.to"
+                    class="p-4 text-[#CCD6E5] font-bold rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] flex items-center w-fit gap-3"
+                >
+                    <span class="w-7 h-5 flex items-center justify-center shrink-0">
+                        <svg v-if="item.icon === 'home'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 12" fill="none">
+                            <path d="M11.8902 5.63805L6.37366 0.125547C6.33394 0.0857489 6.28676 0.0541748 6.23482 0.0326318C6.18289 0.0110888 6.12721 0 6.07098 0C6.01475 0 5.95908 0.0110888 5.90714 0.0326318C5.8552 0.0541748 5.80802 0.0857489 5.7683 0.125547L0.251786 5.63805C0.0910714 5.79876 0 6.01707 0 6.24474C0 6.71751 0.384375 7.10189 0.857143 7.10189H1.43839V11.0354C1.43839 11.2724 1.62991 11.4639 1.86696 11.4639H5.21384V8.46394H6.71384V11.4639H10.275C10.5121 11.4639 10.7036 11.2724 10.7036 11.0354V7.10189H11.2848C11.5125 7.10189 11.7308 7.01215 11.8915 6.8501C12.225 6.51528 12.225 5.97287 11.8902 5.63805Z" fill="#CCD6E5"/>
+                        </svg>
 
-            <svg v-else-if="item.icon === 'search'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 13" fill="none">
-                <path d="M11.8571 11.8571L9.29371 9.28914M10.7143 5.85714C10.7143 7.14534 10.2026 8.38077 9.29166 9.29166C8.38077 10.2026 7.14534 10.7143 5.85714 10.7143C4.56895 10.7143 3.33352 10.2026 2.42262 9.29166C1.51173 8.38077 1 7.14534 1 5.85714C1 4.56895 1.51173 3.33352 2.42262 2.42262C3.33352 1.51173 4.56895 1 5.85714 1C7.14534 1 8.38077 1.51173 9.29166 2.42262C10.2026 3.33352 10.7143 4.56895 10.7143 5.85714Z" stroke-width="2" stroke-linecap="round" stroke="#CCD6E5"/>
-            </svg>
+                        <svg v-else-if="item.icon === 'search'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 13" fill="none">
+                            <path d="M11.8571 11.8571L9.29371 9.28914M10.7143 5.85714C10.7143 7.14534 10.2026 8.38077 9.29166 9.29166C8.38077 10.2026 7.14534 10.7143 5.85714 10.7143C4.56895 10.7143 3.33352 10.2026 2.42262 9.29166C1.51173 8.38077 1 7.14534 1 5.85714C1 4.56895 1.51173 3.33352 2.42262 2.42262C3.33352 1.51173 4.56895 1 5.85714 1C7.14534 1 8.38077 1.51173 9.29166 2.42262C10.2026 3.33352 10.7143 4.56895 10.7143 5.85714Z" stroke-width="2" stroke-linecap="round" stroke="#CCD6E5"/>
+                        </svg>
 
-            <svg v-else-if="item.icon === 'books'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" fill="none">
-                <path d="M5.44964 0.818801C4.69586 0.362855 3.84771 0.0888706 2.9715 0.0182658C2.09529 -0.0523389 1.21475 0.082349 0.398728 0.411801C0.280876 0.459103 0.179843 0.541031 0.108743 0.646952C0.037642 0.752874 -0.000244053 0.877898 1.18307e-06 1.0058V7.4188C1.18307e-06 7.8478 0.430365 8.1415 0.825819 7.982C1.49409 7.71257 2.21509 7.60257 2.9325 7.66057C3.64991 7.71858 4.3443 7.94304 4.96146 8.3164L5.58055 8.6904C5.628 8.71955 5.67873 8.73165 5.72727 8.7311C5.77915 8.73212 5.83024 8.71819 5.87455 8.69095L6.49309 8.3164C7.11024 7.94304 7.80464 7.71858 8.52205 7.66057C9.23946 7.60257 9.96045 7.71257 10.6287 7.982C10.7201 8.01885 10.819 8.03256 10.9169 8.02193C11.0147 8.0113 11.1085 7.97666 11.19 7.92103C11.2714 7.86541 11.3382 7.79049 11.3843 7.70284C11.4304 7.61519 11.4545 7.51748 11.4545 7.41825V1.0058C11.4545 0.744001 11.2964 0.509151 11.0558 0.411801C10.2398 0.0826017 9.35931 -0.0518547 8.4832 0.0189403C7.60709 0.0897354 6.75908 0.363864 6.00546 0.819901L5.72727 0.988201L5.44964 0.818801ZM6.13691 2.1333C6.13691 2.0239 6.09381 1.91898 6.01709 1.84162C5.94037 1.76426 5.83632 1.7208 5.72782 1.7208C5.61932 1.7208 5.51527 1.76426 5.43855 1.84162C5.36183 1.91898 5.31873 2.0239 5.31873 2.1333V7.3583C5.31873 7.4677 5.36183 7.57262 5.43855 7.64998C5.51527 7.72734 5.61932 7.7708 5.72782 7.7708C5.83632 7.7708 5.94037 7.72734 6.01709 7.64998C6.09381 7.57262 6.13691 7.4677 6.13691 7.3583V2.1333Z" fill-rule="evenodd" clip-rule="evenodd" fill="#CCD6E5"/>
-            </svg>
+                        <svg v-else-if="item.icon === 'books'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" fill="none">
+                            <path d="M5.44964 0.818801C4.69586 0.362855 3.84771 0.0888706 2.9715 0.0182658C2.09529 -0.0523389 1.21475 0.082349 0.398728 0.411801C0.280876 0.459103 0.179843 0.541031 0.108743 0.646952C0.037642 0.752874 -0.000244053 0.877898 1.18307e-06 1.0058V7.4188C1.18307e-06 7.8478 0.430365 8.1415 0.825819 7.982C1.49409 7.71257 2.21509 7.60257 2.9325 7.66057C3.64991 7.71858 4.3443 7.94304 4.96146 8.3164L5.58055 8.6904C5.628 8.71955 5.67873 8.73165 5.72727 8.7311C5.77915 8.73212 5.83024 8.71819 5.87455 8.69095L6.49309 8.3164C7.11024 7.94304 7.80464 7.71858 8.52205 7.66057C9.23946 7.60257 9.96045 7.71257 10.6287 7.982C10.7201 8.01885 10.819 8.03256 10.9169 8.02193C11.0147 8.0113 11.1085 7.97666 11.19 7.92103C11.2714 7.86541 11.3382 7.79049 11.3843 7.70284C11.4304 7.61519 11.4545 7.51748 11.4545 7.41825V1.0058C11.4545 0.744001 11.2964 0.509151 11.0558 0.411801C10.2398 0.0826017 9.35931 -0.0518547 8.4832 0.0189403C7.60709 0.0897354 6.75908 0.363864 6.00546 0.819901L5.72727 0.988201L5.44964 0.818801ZM6.13691 2.1333C6.13691 2.0239 6.09381 1.91898 6.01709 1.84162C5.94037 1.76426 5.83632 1.7208 5.72782 1.7208C5.61932 1.7208 5.51527 1.76426 5.43855 1.84162C5.36183 1.91898 5.31873 2.0239 5.31873 2.1333V7.3583C5.31873 7.4677 5.36183 7.57262 5.43855 7.64998C5.51527 7.72734 5.61932 7.7708 5.72782 7.7708C5.83632 7.7708 5.94037 7.72734 6.01709 7.64998C6.09381 7.57262 6.13691 7.4677 6.13691 7.3583V2.1333Z" fill-rule="evenodd" clip-rule="evenodd" fill="#CCD6E5"/>
+                        </svg>
 
-            <svg v-else-if="item.icon === 'lists'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 12" fill="none">
-                <path d="M8.33333 0C8.77536 0 9.19928 0.176898 9.51184 0.491779C9.8244 0.80666 10 1.23373 10 1.67904V11.5795C10.0001 11.6626 9.97579 11.7439 9.93002 11.8131C9.88424 11.8823 9.81911 11.9362 9.74289 11.968C9.66666 11.9998 9.58276 12.0082 9.50184 11.9919C9.42092 11.9756 9.34661 11.9355 9.28833 11.8767L5.295 7.85286C5.2563 7.81377 5.21032 7.78276 5.15969 7.7616C5.10907 7.74044 5.05481 7.72954 5 7.72954C4.94519 7.72954 4.89093 7.74044 4.84031 7.7616C4.78968 7.78276 4.7437 7.81377 4.705 7.85286L0.711667 11.8767C0.653393 11.9355 0.579083 11.9756 0.498159 11.9919C0.417236 12.0082 0.333342 11.9998 0.257115 11.968C0.180887 11.9362 0.115758 11.8823 0.0699839 11.8131C0.0242101 11.7439 -0.00014697 11.6626 6.67208e-07 11.5795V1.67904C6.67208e-07 1.23373 0.175595 0.80666 0.488156 0.491779C0.800716 0.176898 1.22464 0 1.66667 0H8.33333Z" fill="#CCD6E5"/>
-            </svg>
+                        <svg v-else-if="item.icon === 'lists'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 12" fill="none">
+                            <path d="M8.33333 0C8.77536 0 9.19928 0.176898 9.51184 0.491779C9.8244 0.80666 10 1.23373 10 1.67904V11.5795C10.0001 11.6626 9.97579 11.7439 9.93002 11.8131C9.88424 11.8823 9.81911 11.9362 9.74289 11.968C9.66666 11.9998 9.58276 12.0082 9.50184 11.9919C9.42092 11.9756 9.34661 11.9355 9.28833 11.8767L5.295 7.85286C5.2563 7.81377 5.21032 7.78276 5.15969 7.7616C5.10907 7.74044 5.05481 7.72954 5 7.72954C4.94519 7.72954 4.89093 7.74044 4.84031 7.7616C4.78968 7.78276 4.7437 7.81377 4.705 7.85286L0.711667 11.8767C0.653393 11.9355 0.579083 11.9756 0.498159 11.9919C0.417236 12.0082 0.333342 11.9998 0.257115 11.968C0.180887 11.9362 0.115758 11.8823 0.0699839 11.8131C0.0242101 11.7439 -0.00014697 11.6626 6.67208e-07 11.5795V1.67904C6.67208e-07 1.23373 0.175595 0.80666 0.488156 0.491779C0.800716 0.176898 1.22464 0 1.66667 0H8.33333Z" fill="#CCD6E5"/>
+                        </svg>
 
-            <svg v-else-if="item.icon === 'profile'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 14" fill="none">
-                <path d="M8 9C9.06087 9 10.0783 9.42143 10.8284 10.1716C11.5786 10.9217 12 11.9391 12 13V14H0V13C0 11.9391 0.421427 10.9217 1.17157 10.1716C1.92172 9.42143 2.93913 9 4 9H8ZM7 0C7.79565 0 8.55871 0.31607 9.12132 0.87868C9.68393 1.44129 10 2.20435 10 3V5C10 5.79565 9.68393 6.55871 9.12132 7.12132C8.55871 7.68393 7.79565 8 7 8H5C4.20435 8 3.44129 7.68393 2.87868 7.12132C2.31607 6.55871 2 5.79565 2 5V3C2 2.20435 2.31607 1.44129 2.87868 0.87868C3.44129 0.31607 4.20435 0 5 0H7Z" fill="#CCD6E5"/>
-            </svg>
-        </span>
-        <span>{{ item.label }}</span>
-    </RouterLink>
-</div>
+                        <svg v-else-if="item.icon === 'profile'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 14" fill="none">
+                            <path d="M8 9C9.06087 9 10.0783 9.42143 10.8284 10.1716C11.5786 10.9217 12 11.9391 12 13V14H0V13C0 11.9391 0.421427 10.9217 1.17157 10.1716C1.92172 9.42143 2.93913 9 4 9H8ZM7 0C7.79565 0 8.55871 0.31607 9.12132 0.87868C9.68393 1.44129 10 2.20435 10 3V5C10 5.79565 9.68393 6.55871 9.12132 7.12132C8.55871 7.68393 7.79565 8 7 8H5C4.20435 8 3.44129 7.68393 2.87868 7.12132C2.31607 6.55871 2 5.79565 2 5V3C2 2.20435 2.31607 1.44129 2.87868 0.87868C3.44129 0.31607 4.20435 0 5 0H7Z" fill="#CCD6E5"/>
+                        </svg>
+
+                        <svg v-else-if="item.icon === 'logs'" class="h-5 w-auto shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="none">
+                            <path d="M2 0C0.89543 0 0 0.89543 0 2V12C0 13.1046 0.89543 14 2 14H12C13.1046 14 14 13.1046 14 12V2C14 0.89543 13.1046 0 12 0H2ZM3.5 3.5H10.5V5H3.5V3.5ZM3.5 6.25H10.5V7.75H3.5V6.25ZM3.5 9H8V10.5H3.5V9Z" fill="#CCD6E5"/>
+                        </svg>
+                    </span>
+                    <span>{{ item.label }}</span>
+                </RouterLink>
+            </div>
 
             <button @click="postando = true" class="rounded-full bg-[#CCD6E5] hover:bg-[#2BA69C] px-4 py-3 text-center flex items-center hover:cursor-pointer w-full text-xl text-[#0E121A] font-bold justify-center">
                 POSTAR
@@ -142,10 +154,8 @@ onMounted(async () => {
 
         <!-- perfil + menu -->
         <div class="relative w-full">
-            <!-- fecha ao clicar fora -->
             <div v-if="menuAberto" class="fixed inset-0 z-10" @click="menuAberto = false"></div>
 
-            <!-- menu -->
             <div
                 v-if="menuAberto"
                 class="absolute bottom-full left-0 mb-2 w-full z-20 flex flex-col gap-4 p-4 rounded-2xl bg-[#0E121A] border border-[#5A6270] shadow-lg"
@@ -158,7 +168,6 @@ onMounted(async () => {
                 </Botao>
             </div>
 
-            <!-- botão do perfil -->
             <button
                 @click="menuAberto = !menuAberto"
                 class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between"
