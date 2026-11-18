@@ -46,7 +46,6 @@ const handleRegister = async () => {
 
 <template>
   <Template variant="none" class="items-center flex">
-    <Loading v-if="loading" />
 
     <div class="flex flex-row-reverse justify-between items-center">
       <div class="w-full max-w-148 flex flex-col gap-8">
@@ -124,8 +123,9 @@ const handleRegister = async () => {
             <button
               type="submit"
               :disabled="loading"
-              class="w-full text-xl bg-[#33BC90] text-[#18202C] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+              class="w-full text-xl flex gap-4 items-center justify-center bg-[#33BC90] text-[#18202C] font-bold py-2 px-4 rounded-full hover:bg-[#2BA69C] hover:cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
             >
+             <Loading v-if="loading" />
               {{ loading ? 'Criando...' : 'Criar conta' }}
             </button>
   

@@ -32,9 +32,10 @@ const routes = [
   { path: '/users/:username/reviews', component: () => import('../pages/Resenhas.vue'), meta: { requiresAuth: true } },
   {
     path: '/resenhas/:id',
-    name: 'resenha-detalhes',
     component: () => import('../pages/Resenha.vue'),
-}
+    meta: { requiresAuth: true }
+  },
+  { path: '/settings', component: () => import('../pages/Settings.vue'), meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({
