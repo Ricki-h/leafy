@@ -83,6 +83,11 @@ const navItems = computed(() => {
     return items
 })
 
+const displayName = computed(() => {
+    const name = me.value?.name || ''
+    return name.length > 10 ? `${name.slice(0, 10)}...` : name
+})
+
 onMounted(async () => {
     await loadMe()
     console.log(me.value.role)
@@ -172,13 +177,15 @@ onMounted(async () => {
                 @click="menuAberto = !menuAberto"
                 class="rounded-full bg-[#0E121A] hover:bg-[#2E3B4E] p-4 flex items-center gap-4 hover:cursor-pointer w-full justify-between"
             >
-                <div class="flex gap-3 items-center">
-                    <div class="w-12 h-12 rounded-full overflow-hidden">
+                <div class="flex gap-3 items-center min-w-0">
+                    <div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
                         <img :src="me.avatarUrl" alt="" class="rounded-full">
                     </div>
-                    <div class="flex flex-col items-start">
-                        <p class="text-[#CCD6E5] text-base font-semibold">{{ me.name }}</p>
-                        <p class="text-[#5A6270] text-sm">{{ '@' + me.username }}</p>
+                    <div class="flex flex-col items-start min-w-0">
+                        <p :title="me.name" class="text-[#CCD6E5] text-base font-semibold whitespace-nowrap">
+                            {{ displayName }}
+                        </p>
+                        <p class="text-[#5A6270] text-sm truncate w-full">{{ '@' + me.username }}</p>
                     </div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="4" viewBox="0 0 18 4" fill="none">
