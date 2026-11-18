@@ -70,7 +70,7 @@ async function logout() {
 // ---------- links de navegação ----------
 const navItems = computed(() => [
     { label: 'Home', to: '/', icon: 'home' },
-    { label: 'Explorar', to: '/', icon: 'search' },
+    { label: 'Explorar', to: '/explorer', icon: 'search' },
     { label: 'Livros', to: '/books', icon: 'books' },
     { label: 'Listas', to: `/users/${me.value.username}/lists`, icon: 'lists' },
     { label: 'Profile', to: `/users/${me.value.username}`, icon: 'profile' },
