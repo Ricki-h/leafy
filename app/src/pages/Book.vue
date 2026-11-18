@@ -1,52 +1,81 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Loading from '../components/Loading.vue';
 import Template from './base/Template.vue';
 import CriarPost from '../components/CriarPost.vue';
 import ModalEscolherLista from '../components/ModalEscolherLista.vue';
-import AvaliarLivro from '../components/AvaliarLivro.vue'
+import AvaliarLivro from '../components/AvaliarLivro.vue';
 import api from '../services/api.js';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
-const loading = ref(false)
-const book = ref(null)
-const showModal = ref(false)
-const showListModal = ref(false)
-const showRatingModal = ref(false)
+const book = ref(null);
+const showModal = ref(false);
+const showListModal = ref(false);
+const showRatingModal = ref(false);
 
-const ratingsData = ref(null)
+const activeTab = ref('avaliacoes');
+const ratingsData = ref(null);
+const reviewsData = ref(null);
+const loadingReviews = ref(false);
 
-const route = useRoute()
+const criterios = [
+    { chave: 'writing', label: 'Escrita' },
+    { chave: 'plot', label: 'Narrativa' },
+    { chave: 'characters', label: 'Personagens' },
+    { chave: 'pacing', label: 'Ritmo' },
+    { chave: 'emotionalImpact', label: 'Impacto' },
+    { chave: 'worldbuilding', label: 'Mundo' },
+];
+
+const route = useRoute();
+const router = useRouter();
+
 async function loadBook() {
     try {
-        const { data } = await api.get(`/books/${route.params.id}`)
-    
-        book.value = data
-    }
-    catch(err) {
-        console.error(err)
+        const { data } = await api.get(`/books/${route.params.id}`);
+        book.value = data;
+    } catch (err) {
+        console.error(err);
     }
 }
 
 async function loadRatings() {
     try {
-        const { data } = await api.get(`/ratings/${route.params.id}`)
+        const { data } = await api.get(`/ratings/${route.params.id}`);
+        ratingsData.value = data;
+    } catch (err) {
+        console.error(err);
+    }
+}
 
-        ratingsData.value = data
+async function loadReviews() {
+    loadingReviews.value = true;
+    try {
+        const { data } = await api.get(`/resenhas/book/${route.params.id}`);
+        reviewsData.value = data;
+    } catch (err) {
+        console.error(err);
+    } finally {
+        loadingReviews.value = false;
     }
-    catch(err) {
-        console.error(err)
-    }
+}
+
+function resumoResenha(texto, max = 280) {
+    if (!texto) return '';
+    if (texto.length <= max) return texto;
+    return texto.substring(0, max).trim() + '...';
 }
 
 function voltar() {
-    window.history.back()
+    router.back();
 }
 
-onMounted(async () => {
-    await loadBook()
-    await loadRatings()
-})
+async function carregarTudo() {
+    await Promise.all([loadBook(), loadRatings(), loadReviews()]);
+}
+
+onMounted(carregarTudo);
+watch(() => route.params.id, carregarTudo);
 </script>
 
 <template>
@@ -60,6 +89,7 @@ onMounted(async () => {
                     <span>voltar</span>
                 </button>
             </div>
+
             <div v-if="book" class="flex gap-8 py-8 border-b border-[#5A6270] px-8">
                 <div class="flex flex-col gap-4 justify-between">
                     <div class="flex flex-col gap-2">
@@ -71,7 +101,7 @@ onMounted(async () => {
                             <p class="text-sm text-[#6E7684]">-</p>
                             <p class="text-sm text-[#6E7684]">{{ book.publisher }}</p>
                             <p class="text-sm text-[#6E7684]">-</p>
-                            <p class="text-sm text-[#6E7684]">{{ book.pageCount + ' pags' || '??? pags' }}</p>
+                            <p class="text-sm text-[#6E7684]">{{ book.pageCount ? book.pageCount + ' pags' : '??? pags' }}</p>
                         </div>
                         <div class="flex gap-2 flex-wrap">
                             <div v-for="genre in book.genres" :key="genre.id" class="px-6 py-1 bg-[#682B9C] text-sm text-[#CCD6E5] rounded-full font-inter font-bold">
@@ -94,7 +124,37 @@ onMounted(async () => {
                 <img :src="book.coverUrl" alt="Book cover" class="w-80 h-120 object-cover">
             </div>
 
-            <div v-if="ratingsData" class="flex flex-col">
+            <!-- Tabs -->
+            <div class="flex border-b border-[#5A6270] px-8">
+                <button
+                    @click="activeTab = 'avaliacoes'"
+                    class="py-3.5 px-4 font-semibold text-sm flex items-center gap-2 border-b-2 transition-colors hover:cursor-pointer"
+                    :class="activeTab === 'avaliacoes'
+                        ? 'border-[#2BA69C] text-[#CCD6E5]'
+                        : 'border-transparent text-[#6E7684] hover:text-[#CCD6E5]'"
+                >
+                    <span>Avaliações</span>
+                    <span v-if="ratingsData" class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-[#CCD6E5]">
+                        {{ ratingsData.totalRatings }}
+                    </span>
+                </button>
+
+                <button
+                    @click="activeTab = 'resenhas'"
+                    class="py-3.5 px-4 font-semibold text-sm flex items-center gap-2 border-b-2 transition-colors hover:cursor-pointer"
+                    :class="activeTab === 'resenhas'
+                        ? 'border-[#2BA69C] text-[#CCD6E5]'
+                        : 'border-transparent text-[#6E7684] hover:text-[#CCD6E5]'"
+                >
+                    <span>Resenhas</span>
+                    <span v-if="reviewsData" class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-[#CCD6E5]">
+                        {{ reviewsData.total }}
+                    </span>
+                </button>
+            </div>
+
+            <!-- Aba: Avaliações -->
+            <div v-if="activeTab === 'avaliacoes' && ratingsData" class="flex flex-col">
                 <div class="flex items-center gap-3 px-8 py-4 border-b border-[#5A6270]">
                     <span class="text-2xl font-bold text-[#CCD6E5]">{{ ratingsData.average || '—' }}</span>
                     <span class="text-[#5A6270] text-sm">
@@ -136,10 +196,86 @@ onMounted(async () => {
                 </div>
             </div>
 
+            <!-- Aba: Resenhas -->
+            <div v-if="activeTab === 'resenhas'" class="flex flex-col">
+                <div v-if="loadingReviews" class="flex justify-center py-8">
+                    <Loading />
+                </div>
+
+                <template v-else-if="reviewsData">
+                    <div class="flex items-center gap-3 px-8 py-4 border-b border-[#5A6270]">
+                        <span class="text-2xl font-bold text-[#CCD6E5]">{{ reviewsData.average || '—' }}</span>
+                        <span class="text-[#5A6270] text-sm">
+                            {{ reviewsData.total }} {{ reviewsData.total === 1 ? 'resenha' : 'resenhas' }}
+                        </span>
+                    </div>
+
+                    <div v-if="reviewsData.resenhas.length === 0" class="px-8 py-6 text-[#5A6270] text-sm">
+                        Nenhuma resenha publicada ainda. Seja o primeiro a escrever uma!
+                    </div>
+
+                    <article
+                        v-else
+                        v-for="review in reviewsData.resenhas"
+                        :key="review.id"
+                        class="px-8 py-5 flex gap-3 border-b border-[#5A6270] hover:bg-white/[0.02] transition-colors"
+                    >
+                        <RouterLink
+                            v-if="review.user"
+                            :to="`/users/${review.user.username}`"
+                            class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
+                        >
+                            <img :src="review.user.avatarUrl" alt="" class="w-full h-full object-cover">
+                        </RouterLink>
+
+                        <div class="flex-1 min-w-0 flex flex-col gap-3">
+                            <div class="flex items-center justify-between gap-3">
+                                <div v-if="review.user" class="flex items-center gap-2">
+                                    <RouterLink :to="`/users/${review.user.username}`" class="text-[#CCD6E5] text-sm font-semibold hover:underline">
+                                        {{ review.user.name }}
+                                    </RouterLink>
+                                    <span class="text-[#5A6270] text-sm">{{ '@' + review.user.username }}</span>
+                                </div>
+
+                                <span class="shrink-0 px-3 py-1 rounded-full bg-[#2BA69C] text-[#0E121A] font-bold text-sm">
+                                    {{ review.score }}/10
+                                </span>
+                            </div>
+
+                            <!-- Critérios -->
+                            <div class="flex flex-wrap gap-2">
+                                <template v-for="c in criterios" :key="c.chave">
+                                    <span
+                                        v-if="review[c.chave] !== null && review[c.chave] !== undefined"
+                                        class="px-2 py-0.5 rounded-full border border-white/20 text-xs text-[#CCD6E5]"
+                                    >
+                                        {{ c.label }}: <b>{{ review[c.chave] }}/5</b>
+                                    </span>
+                                </template>
+                            </div>
+
+                            <!-- Prévia do texto -->
+                            <p v-if="review.body" class="text-[#CCD6E5] text-sm/6 whitespace-pre-line">
+                                {{ resumoResenha(review.body, 280) }}
+                            </p>
+
+                            <div>
+                                <RouterLink
+                                    :to="`/resenhas/${review.id}`"
+                                    class="inline-flex items-center gap-1 text-sm font-semibold text-[#FF82BD] hover:underline"
+                                >
+                                    Ler resenha completa →
+                                </RouterLink>
+                            </div>
+                        </div>
+                    </article>
+                </template>
+            </div>
+
             <CriarPost
                 v-if="showModal && book"
                 :book-id="book.id"
-                @close="showModal = false"
+                @close="() => { showModal = false; loadReviews() }"
             />
             <ModalEscolherLista
                 v-if="showListModal"

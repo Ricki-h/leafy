@@ -34,7 +34,7 @@ async function handleSubmit() {
     try {
         loading.value = true
 
-        const { data } = await api.put(`/ratings/rate/${props.bookId}`, {
+        const { data } = await api.post(`/ratings/rate/${props.bookId}`, {
             leafs: leafs.value,
             comment: comment.value
         })

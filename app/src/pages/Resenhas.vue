@@ -40,6 +40,10 @@ async function load() {
   }
 }
 
+function abrirResenha(reviewId) {
+  router.push(`/resenhas/${reviewId}`)
+}
+
 function voltar() {
   router.push(`/users/${route.params.username}`)
 }
@@ -93,10 +97,11 @@ watch(() => route.params.username, load)
                     <article
                         v-for="review in reviews"
                         :key="review.id"
-                        class="px-8 py-5 flex gap-4 border-b border-[#5A6270]"
+                        @click="abrirResenha(review.id)"
+                        class="px-8 py-5 flex gap-4 border-b border-[#5A6270] cursor-pointer hover:bg-[#2E3B4E]/30 transition-colors"
                     >
                         <!-- Capa -->
-                        <RouterLink :to="`/books/${review.book?.id}`" class="shrink-0 w-20">
+                        <RouterLink :to="`/books/${review.book?.id}`" @click.stop class="shrink-0 w-20">
                             <img
                                 v-if="review.book?.coverUrl"
                                 :src="review.book.coverUrl"
@@ -110,6 +115,7 @@ watch(() => route.params.username, load)
                             <div class="flex items-start justify-between gap-3">
                                 <RouterLink
                                     :to="`/books/${review.book?.id}`"
+                                    @click.stop
                                     class="font-semibold text-[#FFD4E8] hover:underline"
                                 >
                                     {{ review.book?.title || 'Livro' }}

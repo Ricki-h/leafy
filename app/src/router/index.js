@@ -30,6 +30,11 @@ const routes = [
      { path: '/users/:username/followers', component: () => import('../pages/Followers.vue'), meta: { requiresAuth: true } },
    { path: '/users/:username/following', component: () => import('../pages/Followers.vue'), meta: { requiresAuth: true } },
   { path: '/users/:username/reviews', component: () => import('../pages/Resenhas.vue'), meta: { requiresAuth: true } },
+  {
+    path: '/resenhas/:id',
+    name: 'resenha-detalhes',
+    component: () => import('../pages/Resenha.vue'),
+}
 ]
 
 const router = createRouter({
